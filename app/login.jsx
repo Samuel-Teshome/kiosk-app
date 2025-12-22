@@ -2,6 +2,7 @@ import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
 import { useColorScheme } from "@/hooks/useColorScheme";
 import { Feather } from "@expo/vector-icons";
+import Constants from "expo-constants";
 import { router } from "expo-router";
 import { useState } from "react";
 import toast, { Toaster } from "react-hot-toast";
@@ -22,10 +23,11 @@ const Login = () => {
     password: "",
   });
 
-  const BASE_URL =
-    process.env.NODE_ENV !== "production"
-      ? `http://localhost:3000`
-      : "http://kiosk.ati.gov.et:3000";
+  // const BASE_URL =
+  //   process.env.NODE_ENV !== "production"
+  //     ? `http://localhost:3000`
+  //     : "http://kiosk.ati.gov.et:3000";
+  const BASE_URL = Constants.expoConfig.extra.BASE_URL;
 
   const [secure, setSecure] = useState(true);
 

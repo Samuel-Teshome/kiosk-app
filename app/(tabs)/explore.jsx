@@ -7,6 +7,7 @@ import FontAwesome from "@expo/vector-icons/FontAwesome";
 import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 // import { Video } from "expo-av";
+import Constants from "expo-constants";
 import { Image } from "expo-image";
 import { Video as ExpoVideo } from "expo-video";
 import { useEffect, useState } from "react";
@@ -29,10 +30,11 @@ import CustomDropdown2 from "../../components/CustomDropDown2";
 export default function TabTwoScreen() {
   const colorScheme = useColorScheme();
 
-  const BASE_URL =
-    process.env.NODE_ENV !== "production"
-      ? `http://localhost:3000`
-      : "http://kiosk.ati.gov.et:3000";
+  // const BASE_URL =
+  //   process.env.NODE_ENV !== "production"
+  //     ? `http://localhost:3000`
+  //     : "http://kiosk.ati.gov.et:3000";
+  const BASE_URL = Constants.expoConfig.extra.BASE_URL;
 
   const [isPlayerVisible, setPlayerVisible] = useState(false);
   const [form, setForm] = useState({
@@ -583,7 +585,7 @@ const styles = StyleSheet.create({
   },
   headerImg: {
     width: 350,
-    height: 178,
+    height: 150,
     alignSelf: "center",
   },
   headerText: {

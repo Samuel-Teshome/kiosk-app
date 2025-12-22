@@ -2,6 +2,7 @@ import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
 import { useColorScheme } from "@/hooks/useColorScheme";
 import { FontAwesome, Ionicons } from "@expo/vector-icons";
+import Constants from "expo-constants";
 import * as DocumentPicker from "expo-document-picker";
 import * as FileSystem from "expo-file-system";
 import { useRouter } from "expo-router";
@@ -27,10 +28,11 @@ export default function Index() {
     type: "",
     fileName: "",
   });
-  const BASE_URL =
-    process.env.NODE_ENV !== "production"
-      ? `http://localhost:3000`
-      : "http://kiosk.ati.gov.et:3000";
+  // const BASE_URL =
+  //   process.env.NODE_ENV !== "production"
+  //     ? `http://localhost:3000`
+  //     : "http://kiosk.ati.gov.et:3000";
+  const BASE_URL = Constants.expoConfig.extra.BASE_URL;
   const [kebeleOpen, setKebeleOpen] = useState(false);
   const [kebeleItems, setKebeleItems] = useState([
     { label: "Categories", value: "3" },
