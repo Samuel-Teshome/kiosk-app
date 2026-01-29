@@ -2,7 +2,7 @@ import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
 import { useColorScheme } from "@/hooks/useColorScheme";
 import { Feather } from "@expo/vector-icons";
-import Constants from "expo-constants";
+// import Constants from "expo-constants";
 import { router } from "expo-router";
 import { useState } from "react";
 import toast, { Toaster } from "react-hot-toast";
@@ -12,11 +12,15 @@ import {
   Text,
   TextInput,
   TouchableOpacity,
+  useWindowDimensions,
   View,
 } from "react-native";
+import HeaderBar2 from "../components/HeaderBar2";
 
 const Register = () => {
   const colorScheme = useColorScheme();
+  const { width, height } = useWindowDimensions();
+  const isMobile = width < 480;
   const isDark = colorScheme.colorScheme === "dark";
   const [form, setForm] = useState({
     fullName: "",
@@ -24,11 +28,11 @@ const Register = () => {
     password: "",
   });
 
-  // const BASE_URL =
-  //   process.env.NODE_ENV !== "production"
-  //     ? `http://localhost:3000`
-  //     : "http://kiosk.ati.gov.et:3000";
-  const BASE_URL = Constants.expoConfig.extra.BASE_URL;
+  // const BASE_URL = process.env.EXPO_PUBLIC_BASE_URL;
+  const hostname = window.location.hostname;
+  const port = 3000;
+  const BASE_URL = `http://${hostname}:${port}`;
+  console.log("API URL: ", BASE_URL);
 
   const [secure, setSecure] = useState(true);
 
@@ -107,7 +111,8 @@ const Register = () => {
           },
         }}
       />
-      <View style={styles.servicesCard}>
+      <HeaderBar2 />
+      <View style={[styles.servicesCard, { width: isMobile ? "90%" : "50%" }]}>
         <View style={{ alignItems: "center" }}>
           <ThemedText type="title">Registration</ThemedText>
         </View>
@@ -322,11 +327,10 @@ const styles = StyleSheet.create({
     // alignItems: "center",
     gap: 20,
     backgroundColor: "rgba(0, 0, 0, 0)",
-    marginTop: 50,
   },
   servicesCard: {
     // height: 300,
-    width: "50%",
+
     backgroundColor: "#F9F9F9",
     marginHorizontal: 20,
     padding: 15,
