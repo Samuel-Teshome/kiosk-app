@@ -2,6 +2,7 @@ import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
 import { useColorScheme } from "@/hooks/useColorScheme";
 import { FontAwesome, Ionicons } from "@expo/vector-icons";
+// import Constants from "expo-constants";
 import * as DocumentPicker from "expo-document-picker";
 import * as FileSystem from "expo-file-system";
 import { useRouter } from "expo-router";
@@ -16,28 +17,36 @@ import {
   Text,
   TextInput,
   TouchableOpacity,
+  useWindowDimensions,
   View,
 } from "react-native";
 import CustomDropdown2 from "../components/CustomDropDown2";
+import HeaderBar2 from "../components/HeaderBar2";
 
 export default function Index() {
   const colorScheme = useColorScheme();
+  const { width, height } = useWindowDimensions();
+  const isMobile = width < 480;
   const router = useRouter();
   const [form, setForm] = useState({
     type: "",
     fileName: "",
   });
-  const BASE_URL =
-    process.env.NODE_ENV !== "production"
-      ? `http://localhost:3000`
-      : "http://kiosk.ati.gov.et:3000";
+
+  // const BASE_URL = process.env.EXPO_PUBLIC_BASE_URL;
+  const hostname = window.location.hostname;
+  const port = 3000;
+  const BASE_URL = `http://${hostname}:${port}`;
+  console.log("API URL: ", BASE_URL);
+
   const [kebeleOpen, setKebeleOpen] = useState(false);
   const [kebeleItems, setKebeleItems] = useState([
     { label: "Categories", value: "3" },
-    { label: "Contents", value: "2" },
+    { label: "Digital Green Contents", value: "2" },
     { label: "Languages", value: "4" },
     { label: "Services", value: "1" },
     { label: "Subject Areas", value: "5" },
+    { label: "GSMA Content", value: "6" },
   ]);
 
   const [dataTypeItems, setDataTypeItems] = useState([
@@ -46,6 +55,7 @@ export default function Index() {
     { id: "4", name: "Languages" },
     { id: "1", name: "Services" },
     { id: "5", name: "Subject Areas" },
+    { id: "6", name: "GSMA Contents" },
   ]);
   const handleDropdownChange = (fieldName) => (callback) => {
     const selectedValue = callback(form[fieldName]);
@@ -159,6 +169,9 @@ export default function Index() {
     } else if (form.type == 5) {
       // url = "http://localhost:3000/api/subjectAreas";
       url = `${BASE_URL}/api/subjectAreas`;
+    } else if (form.type == 6) {
+      // url = "http://localhost:3000/api/subjectAreas";
+      url = `${BASE_URL}/api/gsma`;
     }
 
     try {
@@ -213,6 +226,7 @@ export default function Index() {
           },
         }}
       />
+      <HeaderBar2 />
       <View
         style={{
           flexDirection: "row",
@@ -220,10 +234,14 @@ export default function Index() {
           justifyContent: "center",
           position: "relative",
           width: "100%",
-          paddingHorizontal: 16,
         }}
       >
-        <View style={[styles.servicesCard, { alignItems: "center", gap: 20 }]}>
+        <View
+          style={[
+            styles.servicesCard,
+            { alignItems: "center", gap: 20, width: isMobile ? "100%" : "80%" },
+          ]}
+        >
           <View style={{ alignItems: "center" }}>
             <ThemedText type="title">Data Management</ThemedText>
           </View>
@@ -240,7 +258,7 @@ export default function Index() {
               style={{
                 // flex: 1,
                 flexDirection: "row",
-                width: "50%",
+                width: isMobile ? "80%" : "50%",
                 // width: "100%",
               }}
             >
@@ -261,7 +279,7 @@ export default function Index() {
             <View
               style={{
                 flexDirection: "column",
-                width: "50%",
+                width: isMobile ? "80%" : "50%",
               }}
             >
               <View>
@@ -295,7 +313,7 @@ export default function Index() {
               style={{
                 flex: 1,
                 flexDirection: "row",
-                width: "50%",
+                width: isMobile ? "80%" : "50%",
               }}
             >
               <Text
@@ -317,7 +335,7 @@ export default function Index() {
                 position: "relative",
                 width: "100%",
                 marginBottom: 20,
-                width: "50%",
+                width: isMobile ? "80%" : "50%",
               }}
             >
               <TextInput
@@ -343,14 +361,24 @@ export default function Index() {
               />
             </View>
           </View>
-          <View style={[styles.input, { alignItems: "center" }]}>
+          <View
+            style={[
+              styles.input,
+              {
+                // justifyContent: "center",
+                // alignItems: "center",
+                // borderWidth: 1,
+              },
+            ]}
+          >
             <View
               style={{
                 flexDirection: "row",
-                justifyContent: "space-between",
-                width: "50%",
-                paddingHorizontal: 30,
+                // justifyContent: "space-between",
+                width: isMobile ? "80%" : "50%",
+                // paddingHorizontal: 30,
                 gap: 50,
+                // borderWidth: 1,
               }}
             >
               <TouchableOpacity onPress={() => sendData()}>
@@ -385,7 +413,13 @@ export default function Index() {
             </View>
           </View>
         </View>
-        <View style={{ position: "absolute", right: 220, top: 16 }}>
+        <View
+          style={{
+            position: "absolute",
+            right: isMobile ? 5 : 220,
+            top: isMobile ? 10 : 16,
+          }}
+        >
           <TouchableOpacity onPress={() => router.push("/register")}>
             <FontAwesome name="user-plus" size={24} color="black" />
           </TouchableOpacity>
@@ -398,11 +432,10 @@ export default function Index() {
 const styles = StyleSheet.create({
   container: {
     justifyContent: "center",
-    padding: 20,
+    padding: 10,
     // alignItems: "center",
     gap: 20,
     backgroundColor: "rgba(0, 0, 0, 0)",
-    marginTop: 50,
   },
   servicesCard: {
     // height: 300,

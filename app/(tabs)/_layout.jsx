@@ -37,9 +37,18 @@ export default function TabLayout() {
       <Tabs.Screen
         name="explore"
         options={{
-          title: "Contents",
+          title: "Extension Videos",
           tabBarIcon: ({ color }) => (
             <IconSymbol size={28} name="paperplane.fill" color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="gsma"
+        options={{
+          title: "GSMA",
+          tabBarIcon: ({ color }) => (
+            <IconSymbol size={28} name="house.fill" color={color} />
           ),
         }}
       />

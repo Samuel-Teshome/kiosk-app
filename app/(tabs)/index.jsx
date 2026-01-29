@@ -1,9 +1,7 @@
-import atiLogoImg from "@/assets/images/ati-logo.png";
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
 import { useColorScheme } from "@/hooks/useColorScheme";
-import { FontAwesome, MaterialCommunityIcons } from "@expo/vector-icons";
-import { router } from "expo-router";
+// import Constants from "expo-constants";
 import { useEffect, useState } from "react";
 import {
   ActivityIndicator,
@@ -15,16 +13,35 @@ import {
   Text,
   TouchableOpacity,
   View,
+  useWindowDimensions,
 } from "react-native";
+import HeaderBar from "../../components/HeaderBar";
 
 export default function HomeScreen() {
   const colorScheme = useColorScheme();
+  const { width, height } = useWindowDimensions();
+  const isMobile = width < 480;
   const [atLeastOneUser, setAtLeastOneUser] = useState();
 
-  const BASE_URL =
-    process.env.NODE_ENV !== "production"
-      ? `http://localhost:3000`
-      : "http://kiosk.ati.gov.et:3000";
+  // const BASE_URL = process.env.EXPO_PUBLIC_BASE_URL;
+
+  // console.log("BASE URL:", BASE_URL);
+  // const API = window.location.hostname.includes("192.168.10")
+  // ? "http://192.168.10.10:3000"
+  // : "http://localhost:8000";
+  const hostname = window.location.hostname;
+  const port = 3000;
+  const BASE_URL = `http://${hostname}:${port}`;
+  console.log("API URL: ", BASE_URL);
+
+  // List of IP addresses and hostnames to check
+  // const validHosts = ["192.168.10", "localhost"];
+
+  // const BASE_URL = validHosts.some((host) => hostname.includes(host))
+  // ? `http://${hostname}:${port}` // Your API URL for valid hosts
+  // : hostname.includes("10.3")
+  // ? "http://`${hostname}`:3000"
+  // : "http://kiosk.ati.gov.et:3000"; // Fallback or production API
 
   const openLink = async (url) => {
     const supported = await Linking.canOpenURL(url);
@@ -99,83 +116,19 @@ export default function HomeScreen() {
   };
   return (
     <ThemedView style={{ flex: 1 }}>
-      <View
-        style={[
-          styles.header,
-          {
-            backgroundColor: colorScheme === "dark" ? "#102714" : "white",
-          },
-        ]}
-      >
-        <View
-          style={{
-            flexDirection: "row",
-            alignItems: "center",
-            justifyContent: "center",
-            position: "relative",
-            width: "100%",
-            paddingHorizontal: 16,
-          }}
-        >
-          <View
-            style={{ flexDirection: "row", alignItems: "center", gap: 150 }}
-          >
-            <Image
-              alt="App Logo"
-              contentFit="contain"
-              style={styles.headerImg}
-              source={atiLogoImg}
-            />
-            <Text
-              style={[
-                styles.headerText,
-                { color: colorScheme === "dark" ? "white" : "#102714" },
-              ]}
-            >
-              Digital Kiosk
-            </Text>
-          </View>
-
-          <View
-            style={{
-              position: "absolute",
-              right: 16,
-              top: 16,
-              flexDirection: "row",
-              gap: 20,
-            }}
-          >
-            <TouchableOpacity onPress={() => router.replace("/login")}>
-              <MaterialCommunityIcons
-                name="database-cog-outline"
-                size={24}
-                color="black"
-                style={{ opacity: "0.5" }}
-              />
-            </TouchableOpacity>
-            {!atLeastOneUser && (
-              <TouchableOpacity onPress={() => router.push("/register")}>
-                <FontAwesome
-                  name="user-plus"
-                  size={24}
-                  color="black"
-                  style={{ opacity: "0.5" }}
-                />
-              </TouchableOpacity>
-            )}
-          </View>
-        </View>
-      </View>
+      <HeaderBar />
       <ScrollView contentContainerStyle={styles.servicesCardContainer}>
         {services.map((service) => (
           <View key={service.id} style={styles.servicesCard}>
             <Text style={styles.serviceName}>{service.displayName}</Text>
-            <Image
-              alt="App Logo"
-              contentFit="contain"
-              style={[styles.headerImg, { height: 350 }]}
-              source={{ uri: service.imageUrl }}
-            />
+            <TouchableOpacity onPress={() => openLink(service.url)}>
+              <Image
+                alt="App Logo"
+                contentFit="contain"
+                style={[styles.headerImg, { height: 350 }]}
+                source={{ uri: service.imageUrl }}
+              />
+            </TouchableOpacity>
             <View
               style={{
                 flexDirection: "row",
@@ -188,9 +141,9 @@ export default function HomeScreen() {
                   type="link"
                   style={{ fontFamily: "OutFit", alignItems: "start" }}
                 >
-                  {service.url.length > 40
-                    ? service.url.substring(0, 40) + "..."
-                    : service.url}
+                  {service.name.length > 40
+                    ? service.name.substring(0, 40) + "..."
+                    : service.name}
                 </ThemedText>
               </Pressable>
               {/* =========================================== */}
@@ -207,6 +160,19 @@ export default function HomeScreen() {
             </View>
           </View>
         ))}
+        {services.length == 0 && (
+          <Text
+            style={[
+              styles.headerText,
+              {
+                color: colorScheme === "dark" ? "white" : "#102714",
+                fontSize: isMobile ? 30 : 40,
+              },
+            ]}
+          >
+            No content available.
+          </Text>
+        )}
       </ScrollView>
     </ThemedView>
   );
@@ -223,7 +189,7 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   reactLogo: {
-    height: 178,
+    height: 150,
     width: 350,
     bottom: 0,
     position: "absolute",
@@ -235,7 +201,7 @@ const styles = StyleSheet.create({
   },
   headerImg: {
     width: 350,
-    height: 178,
+    height: 150,
     alignSelf: "center",
   },
   headerText: {
