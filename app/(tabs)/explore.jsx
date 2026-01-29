@@ -1,4 +1,3 @@
-import atiLogoImg from "@/assets/images/ati-logo.png";
 import { ThemedView } from "@/components/ThemedView";
 import { useColorScheme } from "@/hooks/useColorScheme";
 import AntDesign from "@expo/vector-icons/AntDesign";
@@ -7,7 +6,7 @@ import FontAwesome from "@expo/vector-icons/FontAwesome";
 import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 // import { Video } from "expo-av";
-import Constants from "expo-constants";
+// import Constants from "expo-constants";
 import { Image } from "expo-image";
 import { Video as ExpoVideo } from "expo-video";
 import { useEffect, useState } from "react";
@@ -22,19 +21,23 @@ import {
   StyleSheet,
   Text,
   TouchableOpacity,
+  useWindowDimensions,
   View,
 } from "react-native";
 import ReactPlayer from "react-player";
 import CustomDropdown2 from "../../components/CustomDropDown2";
+import HeaderBar from "../../components/HeaderBar";
 
 export default function TabTwoScreen() {
+  const { width, height } = useWindowDimensions();
+  const isMobile = width < 480;
   const colorScheme = useColorScheme();
 
-  // const BASE_URL =
-  //   process.env.NODE_ENV !== "production"
-  //     ? `http://localhost:3000`
-  //     : "http://kiosk.ati.gov.et:3000";
-  const BASE_URL = Constants.expoConfig.extra.BASE_URL;
+  // const BASE_URL = process.env.EXPO_PUBLIC_BASE_URL;
+  const hostname = window.location.hostname;
+  const port = 3000;
+  const BASE_URL = `http://${hostname}:${port}`;
+  console.log("API URL: ", BASE_URL);
 
   const [isPlayerVisible, setPlayerVisible] = useState(false);
   const [form, setForm] = useState({
@@ -226,48 +229,23 @@ export default function TabTwoScreen() {
           },
         }}
       />
+      <HeaderBar />
       <View
         style={[
-          styles.header,
-          { backgroundColor: colorScheme === "dark" ? "#102714" : "white" },
+          styles.servicesCard,
+          {
+            flexDirection: isMobile ? "column" : "row",
+            alignSelf: "center",
+            justifyContent: "center",
+            gap: 20,
+            width: isMobile ? "90%" : "70%",
+            height: isMobile ? 150 : 80,
+            marginBottom: 5,
+            marginTop: 10,
+          },
         ]}
       >
-        <View
-          style={{
-            flexDirection: "row",
-            alignItems: "center",
-            gap: 150,
-          }}
-        >
-          <Image
-            alt="App Logo"
-            contentFit="contain"
-            style={styles.headerImg}
-            source={atiLogoImg}
-          />
-          <Text
-            style={[
-              styles.headerText,
-              { color: colorScheme === "dark" ? "white" : "#102714" },
-            ]}
-          >
-            Digital Kiosk
-          </Text>
-        </View>
-        <View
-          style={[
-            styles.servicesCard,
-            {
-              flexDirection: "row",
-              justifyContent: "center",
-              alignItems: "center",
-              gap: 20,
-              width: "70%",
-              height: 80,
-              marginBottom: 5,
-            },
-          ]}
-        >
+        <View style={{ flexDirection: "row", gap: 20 }}>
           <View>
             <CustomDropdown2
               title="Language"
@@ -298,6 +276,8 @@ export default function TabTwoScreen() {
               maxHeight={150}
             />
           </View>
+        </View>
+        <View style={{ flexDirection: "row", gap: 20 }}>
           <View>
             <CustomDropdown2
               title="Subject Area"
@@ -325,6 +305,79 @@ export default function TabTwoScreen() {
           </TouchableOpacity>
         </View>
       </View>
+      {/* <View
+        style={[
+          styles.servicesCard,
+          {
+            flexDirection: "row",
+            // flexWrap: "wrap",
+            justifyContent: "center",
+            // alignItems: "center",
+            // alignContent: "center",
+            alignSelf: "center",
+            // borderWidth: 1,
+            gap: 20,
+            width: "70%",
+            height: 80,
+            marginBottom: 5,
+            marginTop: 10,
+          },
+        ]}
+      >
+        <View>
+          <CustomDropdown2
+            title="Language"
+            items={languages}
+            value={form.language}
+            setValue={handleDropdownChange("language")}
+            placeholder="Select Language"
+            zIndex={3000}
+            zIndexInverse={1000}
+            listMode="MODAL"
+            labelKey={"name"}
+            modalAnimation="fade"
+            maxHeight={150}
+          />
+        </View>
+        <View>
+          <CustomDropdown2
+            title="Category"
+            items={categories}
+            value={form.category}
+            setValue={handleDropdownChange("category")}
+            placeholder="Select Category"
+            zIndex={3000}
+            zIndexInverse={1000}
+            listMode="MODAL"
+            labelKey={"name"}
+            modalAnimation="fade"
+            maxHeight={150}
+          />
+        </View>
+        <View>
+          <CustomDropdown2
+            title="Subject Area"
+            items={subjectAreas}
+            value={form.subjectArea}
+            setValue={handleDropdownChange("subjectArea")}
+            placeholder="Select Subject Area"
+            zIndex={3000}
+            zIndexInverse={1000}
+            listMode="MODAL"
+            labelKey={"name"}
+            modalAnimation="fade"
+            maxHeight={150}
+          />
+        </View>
+        <TouchableOpacity onPress={() => filterData()}>
+          <View
+            style={[styles.btn, { opacity: colorScheme === "dark" ? 0.8 : 1 }]}
+          >
+            <Text style={styles.btnText}>Filter</Text>
+          </View>
+        </TouchableOpacity>
+      </View> */}
+      {/* </View> */}
       <FlatList
         data={contents}
         keyExtractor={(item) => item.id}
