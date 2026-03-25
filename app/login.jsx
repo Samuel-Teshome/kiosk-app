@@ -27,7 +27,7 @@ const Login = () => {
   const hostname = window.location.hostname;
   const port = 3000;
   const BASE_URL = `http://${hostname}:${port}`;
-  console.log("API URL: ", BASE_URL);
+  // console.log("API URL: ", BASE_URL);
 
   const [secure, setSecure] = useState(true);
 
