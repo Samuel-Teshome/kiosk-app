@@ -37,7 +37,7 @@ export default function TabTwoScreen() {
   const hostname = window.location.hostname;
   const port = 3000;
   const BASE_URL = `http://${hostname}:${port}`;
-  console.log("API URL: ", BASE_URL);
+  // console.log("API URL: ", BASE_URL);
 
   const [isPlayerVisible, setPlayerVisible] = useState(false);
   const [form, setForm] = useState({

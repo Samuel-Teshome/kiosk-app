@@ -24,7 +24,7 @@ export default function Gsma() {
   const hostname = window.location.hostname;
   const port = 3000;
   const BASE_URL = `http://${hostname}:${port}`;
-  console.log("API URL: ", BASE_URL);
+  // console.log("API URL: ", BASE_URL);
 
   const [contents, setContents] = useState([]);
   const [amharicTitle, setAmharicTitle] = useState("");
