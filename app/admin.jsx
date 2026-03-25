@@ -37,7 +37,7 @@ export default function Index() {
   const hostname = window.location.hostname;
   const port = 3000;
   const BASE_URL = `http://${hostname}:${port}`;
-  console.log("API URL: ", BASE_URL);
+  // console.log("API URL: ", BASE_URL);
 
   const [kebeleOpen, setKebeleOpen] = useState(false);
   const [kebeleItems, setKebeleItems] = useState([
@@ -47,6 +47,13 @@ export default function Index() {
     { label: "Services", value: "1" },
     { label: "Subject Areas", value: "5" },
     { label: "GSMA Content", value: "6" },
+    { label: "8028 Languages", value: "7" },
+    { label: "8028 Top Menus", value: "8" },
+    { label: "8028 Main Menus", value: "9" },
+    { label: "8028 Sub Menus", value: "10" },
+    { label: "8028 Crop Menus", value: "11" },
+    { label: "8028 Altitude Menus", value: "12" },
+    { label: "8028 Soil Type Menus", value: "13" },
   ]);
 
   const [dataTypeItems, setDataTypeItems] = useState([
@@ -56,6 +63,13 @@ export default function Index() {
     { id: "1", name: "Services" },
     { id: "5", name: "Subject Areas" },
     { id: "6", name: "GSMA Contents" },
+    { id: "7", name: "8028 Languages" },
+    { id: "8", name: "8028 Top Menus" },
+    { id: "9", name: "8028 Main Menus" },
+    { id: "10", name: "8028 Sub Menus" },
+    { id: "11", name: "8028 Crop Menus" },
+    { id: "12", name: "8028 Altitude Menus" },
+    { id: "13", name: "8028 Soil Type Menus" },
   ]);
   const handleDropdownChange = (fieldName) => (callback) => {
     const selectedValue = callback(form[fieldName]);
@@ -172,6 +186,20 @@ export default function Index() {
     } else if (form.type == 6) {
       // url = "http://localhost:3000/api/subjectAreas";
       url = `${BASE_URL}/api/gsma`;
+    } else if (form.type == 7) {
+      url = `${BASE_URL}/api/8028_languages`;
+    } else if (form.type == 8) {
+      url = `${BASE_URL}/api/8028_top_menus`;
+    } else if (form.type == 9) {
+      url = `${BASE_URL}/api/8028_main_menus`;
+    } else if (form.type == 10) {
+      url = `${BASE_URL}/api/8028_sub_menus`;
+    } else if (form.type == 11) {
+      url = `${BASE_URL}/api/8028_crop_menus`;
+    } else if (form.type == 12) {
+      url = `${BASE_URL}/api/8028_altitude_menus`;
+    } else if (form.type == 13) {
+      url = `${BASE_URL}/api/8028_soil_type_menus`;
     }
 
     try {
