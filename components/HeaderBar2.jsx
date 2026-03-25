@@ -1,4 +1,5 @@
 import atiLogoImg from "@/assets/images/ati-logo.png";
+import moaLogoImg from "@/assets/images/moa-logo.png";
 import { useColorScheme } from "@/hooks/useColorScheme";
 // import Constants from "expo-constants";
 import { useEffect, useState } from "react";
@@ -25,7 +26,7 @@ const HeaderBar2 = () => {
   const hostname = window.location.hostname;
   const port = 3000;
   const BASE_URL = `http://${hostname}:${port}`;
-  console.log("API URL: ", BASE_URL);
+  // console.log("API URL: ", BASE_URL);
 
   const [loading, setLoading] = useState(true);
 
@@ -79,7 +80,7 @@ const HeaderBar2 = () => {
             alt="App Logo"
             // contentFit="contain"
             // style={[styles.headerImg, { height: 150 }]}
-            // resizeMode="contain"
+            resizeMode="contain"
             style={[
               styles.headerImg,
               {
@@ -88,7 +89,7 @@ const HeaderBar2 = () => {
                 height: 100,
               },
             ]}
-            source={atiLogoImg}
+            source={moaLogoImg}
           />
           <Text
             style={[
@@ -101,6 +102,21 @@ const HeaderBar2 = () => {
           >
             Digital Kiosk
           </Text>
+          <Image
+            alt="App Logo"
+            // contentFit="contain"
+            // style={[styles.headerImg, { height: 150 }]}
+            // resizeMode="contain"
+            style={[
+              styles.headerImg,
+              {
+                width: "100%",
+                maxWidth: 250,
+                height: 100,
+              },
+            ]}
+            source={atiLogoImg}
+          />
         </View>
       </View>
       <ColorBar3 />
