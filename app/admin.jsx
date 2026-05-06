@@ -54,6 +54,7 @@ export default function Index() {
     { label: "8028 Crop Menus", value: "11" },
     { label: "8028 Altitude Menus", value: "12" },
     { label: "8028 Soil Type Menus", value: "13" },
+    { label: "8028 Audio Contents", value: "14" },
   ]);
 
   const [dataTypeItems, setDataTypeItems] = useState([
@@ -70,6 +71,7 @@ export default function Index() {
     { id: "11", name: "8028 Crop Menus" },
     { id: "12", name: "8028 Altitude Menus" },
     { id: "13", name: "8028 Soil Type Menus" },
+    { id: "14", name: "8028 Audio Contents" },
   ]);
   const handleDropdownChange = (fieldName) => (callback) => {
     const selectedValue = callback(form[fieldName]);
@@ -200,6 +202,8 @@ export default function Index() {
       url = `${BASE_URL}/api/8028_altitude_menus`;
     } else if (form.type == 13) {
       url = `${BASE_URL}/api/8028_soil_type_menus`;
+    } else if (form.type == 14) {
+      url = `${BASE_URL}/api/8028_audio_contents`;
     }
 
     try {
