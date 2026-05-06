@@ -105,7 +105,6 @@ export default function Gsma() {
                 setAmharicTitle(content.titleAmharic);
                 setEnglishTitle(content.titleEnglish);
                 setPdfUrl(`${BASE_URL}/${content.filePath}`);
-                console.log(`${BASE_URL}/${content.filePath}`);
               }}
             >
               <Image

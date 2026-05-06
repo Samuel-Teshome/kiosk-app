@@ -52,7 +52,7 @@ const HeaderBar2 = () => {
   }
 
   return (
-    <View>
+    <View style={{ paddingBottom: 10 }}>
       <View
         style={{
           //   flexDirection: isMobile ? "row" : "column",
@@ -70,7 +70,7 @@ const HeaderBar2 = () => {
             flexDirection: isMobile ? "column" : "row",
             justifyContent: "center",
             alignItems: "center",
-            gap: isMobile ? 0 : 20,
+            gap: isMobile ? 0 : 40,
             // borderWidth: 1,
             // alignItems: "center",
             // gap: 150,
