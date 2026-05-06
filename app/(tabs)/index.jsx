@@ -6,12 +6,14 @@ import ati8028LogoImg from "@/assets/images/8028-logo.png";
 import {
   AntDesign,
   FontAwesome,
+  Ionicons,
   MaterialCommunityIcons,
   MaterialIcons,
 } from "@expo/vector-icons";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   ActivityIndicator,
+  Animated,
   Image,
   Linking,
   Modal,
@@ -23,9 +25,12 @@ import {
   View,
   useWindowDimensions,
 } from "react-native";
+import AudioPlayer from "../../components/AudioPlayer";
 import { ColorBar3 } from "../../components/ColorBar";
 import HeaderBar from "../../components/HeaderBar";
+
 export default function HomeScreen() {
+  const opacity = useRef(new Animated.Value(1)).current;
   const colorScheme = useColorScheme();
   const { width, height } = useWindowDimensions();
   const isMobile = width < 480;
@@ -62,6 +67,14 @@ export default function HomeScreen() {
     }
   };
 
+  const [languageCode, setLanguageCode] = useState(0);
+  const [topMainMenuCode, setTopMainMenuCode] = useState(0);
+  const [mainMenuCode, setMainMenuCode] = useState(0);
+  const [subMenuCode, setSubMenuCode] = useState(0);
+  const [altitudeCode, setAltitudeCode] = useState(0);
+  const [soilTypeCode, setSoilTypeCode] = useState(0);
+  const [cropCode, setCropCode] = useState(0);
+
   const [services, setServices] = useState([]);
   const [loading, setLoading] = useState(true);
   const [loadingMenu, setLoadingMenu] = useState(false);
@@ -72,6 +85,8 @@ export default function HomeScreen() {
   const [_8028CropMenus, set_8028CropMenus] = useState([]);
   const [_8028AltitudeMenus, set_8028AltitudeMenus] = useState([]);
   const [_8028SoilTypeMenus, set_8028SoilTypeMenus] = useState([]);
+  const [_8028AudioContent, set_8028AudioContent] = useState();
+  const [_8028ContentPlayedLog, set_8028ContentPlayedLog] = useState("");
   const [showLanguageOptions, setShowLanguageOptions] = useState(false);
   const [showTopMenu, setShowTopMenu] = useState(false);
   const [showMainMenu, setShowMainMenu] = useState(false);
@@ -83,6 +98,7 @@ export default function HomeScreen() {
   const [showHHICropMenuST, setShowHHICropMenuST] = useState(false);
   const [showAltitudeMenu, setShowAltitudeMenu] = useState(false);
   const [showSoilTypeMenu, setShowSoilTypeMenu] = useState(false);
+  const [showAudioPlayer, setShowAudioPlayer] = useState(false);
   const [selectedLanguageCode, setSelectedLanguageCode] = useState();
   const [selectedLanguageName, setSelectedLanguageName] = useState();
   const [languageLabel, setLanguageLabel] = useState();
@@ -95,10 +111,13 @@ export default function HomeScreen() {
   const [showSubMenuLabel, setShowSubMenuLabel] = useState(false);
   const [cropMenuLabel, setCropMenuLabel] = useState();
   const [showCropMenuLabel, setShowCropMenuLabel] = useState(false);
+  const [showSoilTypeCropMenuLabel, setShowSoilTypeCropMenuLabel] =
+    useState(false);
   const [altitudeMenuLabel, setAltitudeMenuLabel] = useState();
   const [showAltitudeMenuLabel, setShowAltitudeMenuLabel] = useState(false);
   const [soilTypeMenuLabel, setSoilTypeMenuLabel] = useState();
   const [showSoilTypeMenuLabel, setShowSoilTypeMenuLabel] = useState(false);
+  const [backingCropList, setBackingCropList] = useState("");
   // "http://localhost:3000/api/api/services"
   useEffect(() => {
     fetch(`${BASE_URL}/api/services`)
@@ -134,6 +153,21 @@ export default function HomeScreen() {
         console.error("API Error:", error);
         setLoading(false);
       });
+
+    Animated.loop(
+      Animated.sequence([
+        Animated.timing(opacity, {
+          toValue: 0,
+          duration: 500,
+          useNativeDriver: true,
+        }),
+        Animated.timing(opacity, {
+          toValue: 1,
+          duration: 500,
+          useNativeDriver: true,
+        }),
+      ]),
+    ).start();
   }, []);
 
   if (loading) {
@@ -196,6 +230,7 @@ export default function HomeScreen() {
 
   const selectLanguage = (language) => {
     setSelectedLanguageCode(language.code);
+    setLanguageCode(language.code);
     setSelectedLanguageName(language.displayName);
     setShowLanguageOptions(false);
     setShowTopMenu(true);
@@ -225,6 +260,7 @@ export default function HomeScreen() {
     setShowSoilTypeMenu(false);
     // setMainMenuLabel(topMenu.displayName);
     setTopMenuLabel(topMenu.displayName);
+    setTopMainMenuCode(topMenu.code);
     setShowTopMenuLabel(true);
     // setShowMainMenuLabel(true);
     get8028MainMenu(topMenu.id);
@@ -235,6 +271,7 @@ export default function HomeScreen() {
     setShowTopMenu(false);
     setShowMainMenu(false);
     setMainMenuLabel(mainMenu.displayName);
+    setMainMenuCode(mainMenu.code);
     setShowMainMenuLabel(true);
     setShowAltitudeMenu(false);
     setShowSoilTypeMenu(false);
@@ -248,6 +285,9 @@ export default function HomeScreen() {
       setShowSubMenu(false);
       setShowCropMenu(false);
       setShow8CropMenu(true);
+      setSubMenuCode(0);
+      setAltitudeCode(0);
+      setSoilTypeCode(0);
       const cropCodes = [1, 2, 3, 6, 7, 8, 11, 14];
       const typeOfCrop = 1;
       get8028CropMenu(selectedLanguageCode, typeOfCrop, cropCodes);
@@ -256,6 +296,9 @@ export default function HomeScreen() {
       setShowCropMenu(false);
       setShow8CropMenu(false);
       setShowHHICropMenuM(true);
+      setSubMenuCode(0);
+      setAltitudeCode(0);
+      setSoilTypeCode(0);
       const cropCodes = [1, 2, 3, 4, 5, 6, 7];
       const typeOfCrop = 2;
       get8028CropMenu(selectedLanguageCode, typeOfCrop, cropCodes);
@@ -269,6 +312,7 @@ export default function HomeScreen() {
     setShowSubMenu(false);
     setShow8CropMenu(false);
     setSubMenuLabel(subMenu.displayName);
+    setSubMenuCode(subMenu.code);
     setShowSubMenuLabel(true);
     setShowAltitudeMenu(false);
     setShowSoilTypeMenu(false);
@@ -277,10 +321,20 @@ export default function HomeScreen() {
     typeOfCrop = 1;
     if (subMenu.nextMenu == "cropMenu") {
       setShowCropMenu(true);
+      setAltitudeCode(0);
+      setSoilTypeCode(0);
       cropCodes = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14];
+      get8028CropMenu(selectedLanguageCode, typeOfCrop, cropCodes);
+    } else if (subMenu.nextMenu == "13cropMenu") {
+      setShowCropMenu(true);
+      setAltitudeCode(0);
+      setSoilTypeCode(0);
+      cropCodes = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13];
       get8028CropMenu(selectedLanguageCode, typeOfCrop, cropCodes);
     } else if (subMenu.nextMenu == "1cropMenu") {
       setShowCropMenu(true);
+      setAltitudeCode(0);
+      setSoilTypeCode(0);
       if (
         subMenu.code == 3 &&
         [7, 8, 9, 10, 11, 12].includes(subMenu.mainMenuId)
@@ -295,6 +349,8 @@ export default function HomeScreen() {
       get8028CropMenu(selectedLanguageCode, typeOfCrop, cropCodes);
     } else if (subMenu.nextMenu == "HHICropMenu") {
       setShowHHICropMenu(true);
+      setAltitudeCode(0);
+      setSoilTypeCode(0);
       cropCodes = [1, 2, 3, 4, 5, 6, 7];
       typeOfCrop = 2;
       get8028CropMenu(selectedLanguageCode, typeOfCrop, cropCodes);
@@ -311,6 +367,7 @@ export default function HomeScreen() {
     setShowSubMenu(false);
     setShow8CropMenu(false);
     setAltitudeMenuLabel(altitudeMenu.displayName);
+    setAltitudeCode(altitudeMenu.code);
     setShowAltitudeMenuLabel(true);
     setShowHHICropMenuST(false);
     setShowAltitudeMenu(false);
@@ -318,15 +375,77 @@ export default function HomeScreen() {
     get8028SoilTypeMenu(selectedLanguageCode);
   };
 
-  const selectCropMenu = (cropMenu) => {};
+  const selectCropMenu = (selectedCrop, backCropList) => {
+    setBackingCropList(backCropList);
+    // setCropCode(selectedCrop.code);
+    setShowAudioPlayer(true);
+    setCropMenuLabel(selectedCrop.displayName);
+    if (backCropList == "Full HHI ST Crop") {
+      setShowSoilTypeCropMenuLabel(true);
+    } else {
+      setShowCropMenuLabel(true);
+    }
+    setShowCropMenu(false);
+    setShow8CropMenu(false);
+    setShowHHICropMenu(false);
+    setShowHHICropMenuM(false);
+    setShowHHICropMenuST(false);
+
+    get8028Content(selectedCrop);
+  };
+
   const selectSoilTypeMenu = (soilTypeMenu) => {
     setShowSoilTypeMenu(false);
     setSoilTypeMenuLabel(soilTypeMenu.displayName);
+    setSoilTypeCode(soilTypeMenu.code);
     setShowSoilTypeMenuLabel(true);
     setShowHHICropMenuST(true);
     cropCodes = [1, 2, 3, 4, 5, 6, 7];
     typeOfCrop = 2;
     get8028CropMenu(selectedLanguageCode, typeOfCrop, cropCodes);
+  };
+
+  const get8028Content = async (selectedCrop) => {
+    // console.log("---==== Get 8028 Content ====---");
+    // console.log("Selected Language: ", languageCode);
+    // console.log("Selected Top Menu:", topMainMenuCode);
+    // console.log("Selected Main Menu: ", mainMenuCode);
+    // console.log("Selected Sub Menu: ", subMenuCode);
+    // console.log("Selected Altitiude: ", altitudeCode);
+    // console.log("Selected Soil Type: ", soilTypeCode);
+    // console.log("Selected Crop Code: ", selectedCrop.code);
+    // console.log("Selected Crop Code 8028: ", selectedCrop.code8028);
+    setLoadingMenu(true);
+    try {
+      fetch(
+        `${BASE_URL}/api/8028_audio_contents/${languageCode}/${topMainMenuCode}/${mainMenuCode}/${subMenuCode}/${altitudeCode}/${soilTypeCode}/${selectedCrop.code8028}`,
+      )
+        .then((res) => res.json())
+        .then((json) => {
+          setLoadingMenu(false);
+          // console.log("@@@@@@@@@@@@@@@@@@@@");
+          // console.log(json[0]);
+          // console.log("@@@@@@@@@@@@@@@@@@@@");
+          set_8028AudioContent(`${BASE_URL}/${json[0].contentFile}`);
+          set_8028ContentPlayedLog(json[0].contentPlayedLog);
+          // for (const item of json) {
+          //   console.log("-=======================---------");
+          //   console.log(item);
+          //   console.log("-=======================---------");
+          //   const processed = {
+          //     ...item,
+          //   };
+
+          //   set_8028AudionContent((prev) => [...prev, processed]);
+          // }
+        })
+        .catch((error) => {
+          console.error("API Error:", error);
+          setLoadingMenu(false);
+        });
+    } catch (error) {
+      console.error("Error Fetching 8028 Audio Content:", error);
+    }
   };
 
   const get8028TopMenu = async (languagCode) => {
@@ -600,6 +719,24 @@ export default function HomeScreen() {
         set_8028SoilTypeMenus([]);
         break;
 
+      case "AudioPlayer":
+        setShowAudioPlayer(false);
+        if (backingCropList == "Full HHI ST Crop") {
+          setShowSoilTypeCropMenuLabel(false);
+        } else {
+          setShowCropMenuLabel(false);
+        }
+        setShowCropMenu(backingCropList == "Full Crop" ? true : false);
+        setShow8CropMenu(backingCropList == "8 Crop" ? true : false);
+        setShowHHICropMenu(backingCropList == "Full HHI Crop" ? true : false);
+        setShowHHICropMenuM(
+          backingCropList == "Full HHI M Crop" ? true : false,
+        );
+        setShowHHICropMenuST(
+          backingCropList == "Full HHI ST Crop" ? true : false,
+        );
+        break;
+
       default:
         break;
     }
@@ -621,6 +758,13 @@ export default function HomeScreen() {
               {service.displayName === "8028" && (
                 <Pressable
                   onPress={() => {
+                    // setLanguageCode(0);
+                    // setTopMainMenuCode(0);
+                    // setMainMenuCode(0);
+                    // setSubMenuCode(0);
+                    // setAltitudeCode(0);
+                    // setSoilTypeCode(0);
+                    // setCropCode(0);
                     set_8028Languages([]);
                     set_8028TopMenus([]);
                     set_8028MainMenus([]);
@@ -636,6 +780,7 @@ export default function HomeScreen() {
                     setShowHHICropMenuM(false);
                     setShowAltitudeMenu(false);
                     setShowSoilTypeMenu(false);
+                    setShowAudioPlayer(false);
                     setDialerVisible(true);
                     get8028Langages();
                   }}
@@ -766,7 +911,7 @@ export default function HomeScreen() {
                       },
                     ]}
                   >
-                    {languageLabel} asdasd
+                    {languageLabel}
                   </Text>
                 )}
 
@@ -795,7 +940,9 @@ export default function HomeScreen() {
                                             ? "SoilTypeMenu"
                                             : showHHICropMenuST
                                               ? "HHICropMenuST"
-                                              : "",
+                                              : showAudioPlayer
+                                                ? "AudioPlayer"
+                                                : "",
                         )
                       }
                     >
@@ -820,7 +967,7 @@ export default function HomeScreen() {
                           {
                             fontSize: isMobile ? 14 : 16,
                             borderColor: "#625641",
-                            // backgroundColor: "#CCCFCF",
+                            backgroundColor: "#CCCFCF",
                             borderWidth: 2,
                             borderRadius: 10,
                             paddingHorizontal: 5,
@@ -845,12 +992,14 @@ export default function HomeScreen() {
                           {
                             fontSize: isMobile ? 14 : 16,
                             borderColor: "#009147",
+                            backgroundColor: "#CCCFCF",
                             borderWidth: 2,
                             color: "#009147",
                             alignSelf: "center",
                             borderRadius: 10,
                             paddingHorizontal: 5,
                             paddingVertical: 2,
+                            fontFamily: "OutFitBold",
                           },
                         ]}
                       >
@@ -903,9 +1052,10 @@ export default function HomeScreen() {
                             styles.headerTitle,
                             {
                               fontSize: isMobile ? 14 : 16,
-                              borderColor: "#91AC34",
+                              borderColor: "#000",
+                              backgroundColor: "#000",
                               borderWidth: 2,
-                              color: "#91AC34",
+                              color: "#fff",
                               alignSelf: "center",
                               borderRadius: 10,
                               paddingHorizontal: 5,
@@ -954,6 +1104,26 @@ export default function HomeScreen() {
                           ]}
                         >
                           {soilTypeMenuLabel}
+                        </Text>
+                      )}
+                      {showSoilTypeCropMenuLabel && (
+                        <Text
+                          style={[
+                            styles.headerTitle,
+                            {
+                              fontSize: isMobile ? 14 : 16,
+                              borderColor: "#000",
+                              borderWidth: 2,
+                              backgroundColor: "#000",
+                              color: "#fff",
+                              alignSelf: "center",
+                              borderRadius: 10,
+                              paddingHorizontal: 5,
+                              paddingVertical: 2,
+                            },
+                          ]}
+                        >
+                          {cropMenuLabel}
                         </Text>
                       )}
                     </View>
@@ -1180,7 +1350,7 @@ export default function HomeScreen() {
                             width: "40%",
                           },
                         ]}
-                        onPress={() => selectCropMenu(cropMenu)}
+                        onPress={() => selectCropMenu(cropMenu, "Full Crop")}
                       >
                         {/* <MaterialCommunityIcons
                             name={iconName}
@@ -1231,7 +1401,7 @@ export default function HomeScreen() {
                             width: "40%",
                           },
                         ]}
-                        onPress={() => selectCropMenu(cropMenu)}
+                        onPress={() => selectCropMenu(cropMenu, "8 Crop")}
                       >
                         {/* <MaterialCommunityIcons
                             name={iconName}
@@ -1282,7 +1452,9 @@ export default function HomeScreen() {
                             width: "40%",
                           },
                         ]}
-                        onPress={() => selectCropMenu(cropMenu)}
+                        onPress={() =>
+                          selectCropMenu(cropMenu, "Full HHI Crop")
+                        }
                       >
                         {/* <MaterialCommunityIcons
                             name={iconName}
@@ -1330,7 +1502,9 @@ export default function HomeScreen() {
                             width: "40%",
                           },
                         ]}
-                        onPress={() => selectCropMenu(cropMenu)}
+                        onPress={() =>
+                          selectCropMenu(cropMenu, "Full HHI M Crop")
+                        }
                       >
                         <Text
                           style={[
@@ -1373,7 +1547,9 @@ export default function HomeScreen() {
                             width: "40%",
                           },
                         ]}
-                        onPress={() => selectCropMenu(cropMenu)}
+                        onPress={() =>
+                          selectCropMenu(cropMenu, "Full HHI ST Crop")
+                        }
                       >
                         <Text
                           style={[
@@ -1479,6 +1655,55 @@ export default function HomeScreen() {
                     })}
                   </View>
                 </View>
+              )}
+
+              {showAudioPlayer && (
+                <View>
+                  {/* <Text>---==== Get 8028 Content ====---</Text>
+                  <Text>Selected Language: {languageCode}</Text>
+                  <Text>Selected Top Menu: {topMainMenuCode}</Text>
+                  <Text>Selected Main Menu: {mainMenuCode}</Text>
+                  <Text>Selected Sub Menu: {subMenuCode}</Text>
+                  <Text>Selected Altitiude: {altitudeCode}</Text>
+                  <Text>Selected Soil Type: {soilTypeCode}</Text>
+                  <Text>Selected Crop Code: selectedCrop</Text> */}
+                  <Text style={styles.title}>{_8028ContentPlayedLog}</Text>
+                  {/* <Animated.View style={{ opacity }}>
+                    <Ionicons name="play-circle" size={20} color="#625641" />
+                  </Animated.View> */}
+                  <Animated.View style={styles.subTitleContainer}>
+                    {languageCode == 1 ? (
+                      <Text style={styles.subTitle}>
+                        የኤክስቴንሽን ምክርን ለማዳመጥ ይህንን{" "}
+                        <Animated.View style={{ opacity }}>
+                          <Ionicons
+                            name="play-circle"
+                            size={20}
+                            color="#fff"
+                            style={{ textAlignVertical: "center" }}
+                          />
+                        </Animated.View>{" "}
+                        ይጫኑ።
+                      </Text>
+                    ) : (
+                      <Text style={styles.subTitle}>
+                        Press{" "}
+                        <Animated.View style={{ opacity }}>
+                          <Ionicons
+                            name="play-circle"
+                            size={20}
+                            color="#625641"
+                            style={{ textAlignVertical: "center" }}
+                          />
+                        </Animated.View>{" "}
+                        to listen the extension advisory.
+                      </Text>
+                    )}
+                  </Animated.View>
+
+                  <AudioPlayer source={_8028AudioContent} />
+                </View>
+                // <AudioPlayer source={audioSource} />
               )}
             </ScrollView>
           </Pressable>
@@ -1647,5 +1872,27 @@ const styles = StyleSheet.create({
     elevation: 5,
     boxShadow: "0 4px 8px rgba(0, 0, 0, 0.5)",
     marginBottom: 30,
+  },
+
+  // Content Played
+  title: {
+    fontFamily: "OutFitBold",
+    fontSize: 20,
+    textAlign: "center",
+  },
+
+  subTitleContainer: {
+    marginVertical: 20,
+    paddingHorizontal: 10,
+    paddingTop: 1,
+    paddingBottom: 5,
+    alignSelf: "center",
+    backgroundColor: "#DB806E",
+    borderRadius: 20,
+  },
+
+  subTitle: {
+    fontFamily: "OutFit",
+    color: "#fff",
   },
 });
