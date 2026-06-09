@@ -904,14 +904,35 @@ export default function HomeScreen() {
       <HeaderBar />
       <ScrollView contentContainerStyle={styles.servicesCardContainer}>
         {services.map((service) => (
-          <View key={service.id} style={styles.servicesCard}>
+          <View
+            key={service.id}
+            style={[
+              styles.servicesCard,
+              {
+                backgroundColor: isDark ? "" : "#F9F9F9",
+                ShadowColor: isDark ? "white" : "black",
+                boxShadow: isDark
+                  ? "0 4px 8px rgba(255, 255, 255, 0.5)"
+                  : "0 4px 8px rgba(0, 0, 0, 0.5)",
+                borderWidth: isDark ? 1 : 0,
+                borderColor: isDark ? "#5e5e5a" : "#e2e0d8",
+              },
+            ]}
+          >
             <View
               style={{
                 flexDirection: "row",
                 justifyContent: "space-between",
               }}
             >
-              <Text style={styles.serviceName}>{service.displayName}</Text>
+              <Text
+                style={[
+                  styles.serviceName,
+                  { color: isDark ? "#fff" : "#102714" },
+                ]}
+              >
+                {service.displayName}
+              </Text>
               {service.displayName === "8028" && (
                 <Pressable
                   onPress={() => {
@@ -928,6 +949,7 @@ export default function HomeScreen() {
                     set_8028SubMenus([]);
                     set_8028CropMenus([]);
                     set_8028LivestockMenus([]);
+                    set_8028LivestockSubMenus([]);
                     setShowLanguageOptions(true);
                     setShowTopMenu(false);
                     setShowMainMenu(false);
@@ -948,7 +970,7 @@ export default function HomeScreen() {
                   <MaterialIcons
                     name="dialpad"
                     size={24}
-                    color="black"
+                    color={isDark ? "white" : "black"}
                     style={{ opacity: "0.6" }}
                   />
                 </Pressable>
@@ -972,7 +994,12 @@ export default function HomeScreen() {
               <Pressable onPress={() => openLink(service.url)}>
                 <ThemedText
                   type="link"
-                  style={{ fontFamily: "OutFit", alignItems: "start" }}
+                  style={{
+                    fontFamily: "OutFit",
+                    alignItems: "start",
+                    color: isDark ? "white" : "#0a7ea4",
+                    opacity: isDark ? "0.6" : "1",
+                  }}
                 >
                   {service.name.length > 40
                     ? service.name.substring(0, 40) + "..."
@@ -2135,7 +2162,7 @@ const styles = StyleSheet.create({
   },
   servicesCard: {
     gap: 10,
-    backgroundColor: "#F9F9F9",
+    // backgroundColor: "#F9F9F9",
     marginHorizontal: 30,
     padding: 15,
     borderRadius: 15,
@@ -2144,13 +2171,12 @@ const styles = StyleSheet.create({
     ShadowRadius: 10,
     ShadowOpacity: 0.1,
     elevation: 5,
-    boxShadow: "0 4px 8px rgba(0, 0, 0, 0.5)",
+    // boxShadow: "0 4px 8px rgba(0, 0, 0, 0.5)",
     marginBottom: 30,
   },
   serviceName: {
     fontSize: 25,
     fontFamily: "OutFit",
-    color: "#102714",
   },
   closeButton: {
     position: "absolute",

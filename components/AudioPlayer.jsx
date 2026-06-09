@@ -1,10 +1,13 @@
 // import { Host, Slider } from "@expo/ui/swift-ui";
+import { useColorScheme } from "@/hooks/useColorScheme";
 import { Ionicons } from "@expo/vector-icons";
 import Slider from "@react-native-community/slider";
 import { useAudioPlayer, useAudioPlayerStatus } from "expo-audio";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 export default function AudioPlayer({ source }) {
+  const colorScheme = useColorScheme();
+  const isDark = colorScheme === "dark";
   const player = useAudioPlayer(source);
   const playerStatus = useAudioPlayerStatus(player);
 
@@ -39,7 +42,7 @@ export default function AudioPlayer({ source }) {
           <Ionicons
             name={playerStatus.playing ? "pause-circle" : "play-circle"}
             size={64}
-            color="#625641"
+            color={isDark ? "#fff" : "#625641"}
           />
         </TouchableOpacity>
 
@@ -50,18 +53,31 @@ export default function AudioPlayer({ source }) {
           maximumValue={playerStatus.duration * 1000}
           value={playerStatus.currentTime * 1000}
           onSlidingComplete={onSeek}
-          minimumTrackTintColor="#009147"
-          maximumTrackTintColor="#91AC34"
-          thumbTintColor="#009147"
+          minimumTrackTintColor={isDark ? "#5e5e5a" : "#009147"}
+          maximumTrackTintColor={isDark ? "#fff" : "#91AC34"}
+          thumbTintColor={isDark ? "#5e5e5a" : "#009147"}
         />
       </View>
       {/* Timer */}
-      <View style={styles.timeRow}>
-        <Text style={styles.textStyle}>
+      <View
+        style={[
+          styles.timeRow,
+          { backgroundColor: isDark ? "#5e5e5a" : "rgba(111, 204, 221, 0.6)" },
+        ]}
+      >
+        <Text
+          style={[styles.textStyle, { color: isDark ? "#fff" : "#625641" }]}
+        >
           {formatTime((playerStatus.currentTime || 0) * 1000)}
         </Text>
-        <Text style={styles.textStyle}>/</Text>
-        <Text style={styles.textStyle}>
+        <Text
+          style={[styles.textStyle, { color: isDark ? "#fff" : "#625641" }]}
+        >
+          /
+        </Text>
+        <Text
+          style={[styles.textStyle, { color: isDark ? "#fff" : "#625641" }]}
+        >
           {formatTime((playerStatus.duration || 0) * 1000)}
         </Text>
       </View>
@@ -86,7 +102,7 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(111, 204, 221, 0.6)",
   },
   textStyle: {
-    fontFamily: "OutFitBold",
+    fontFamily: "OutFit",
     color: "#625641",
   },
 });

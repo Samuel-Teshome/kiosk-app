@@ -1,4 +1,3 @@
-import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
 import { useColorScheme } from "@/hooks/useColorScheme";
 import { FontAwesome, Ionicons } from "@expo/vector-icons";
@@ -25,6 +24,7 @@ import HeaderBar2 from "../components/HeaderBar2";
 
 export default function Index() {
   const colorScheme = useColorScheme();
+  const isDark = colorScheme === "dark";
   const { width, height } = useWindowDimensions();
   const isMobile = width < 480;
   const router = useRouter();
@@ -274,11 +274,32 @@ export default function Index() {
         <View
           style={[
             styles.servicesCard,
-            { alignItems: "center", gap: 20, width: isMobile ? "100%" : "80%" },
+            {
+              alignItems: "center",
+              gap: 20,
+              width: isMobile ? "100%" : "80%",
+              backgroundColor: isDark ? "" : "#F9F9F9",
+              ShadowColor: isDark ? "white" : "black",
+              boxShadow: isDark
+                ? "0 4px 8px rgba(255, 255, 255, 0.5)"
+                : "0 4px 8px rgba(0, 0, 0, 0.5)",
+              borderWidth: isDark ? 1 : 0,
+              borderColor: isDark ? "#5e5e5a" : "#e2e0d8",
+            },
           ]}
         >
           <View style={{ alignItems: "center" }}>
-            <ThemedText type="title">Data Management</ThemedText>
+            {/* <ThemedText type="title">Data Management</ThemedText> */}
+            <Text
+              style={{
+                color: isDark ? "white" : "#615542",
+                fontSize: 32,
+                fontWeight: "bold",
+                lineHeight: 32,
+              }}
+            >
+              Data Management
+            </Text>
           </View>
           <View
             style={[
@@ -300,15 +321,12 @@ export default function Index() {
               <Text
                 style={[
                   styles.inputLabel,
-                  { color: colorScheme === "dark" ? "white" : "#615542" },
+                  { color: isDark ? "white" : "#615542" },
                 ]}
               >
                 Type
               </Text>
-              <Text style={{ color: colorScheme === "dark" ? "white" : "red" }}>
-                {" "}
-                *
-              </Text>
+              <Text style={{ color: isDark ? "white" : "red" }}> *</Text>
             </View>
 
             <View
@@ -354,15 +372,12 @@ export default function Index() {
               <Text
                 style={[
                   styles.inputLabel,
-                  { color: colorScheme === "dark" ? "white" : "#615542" },
+                  { color: isDark ? "white" : "#615542" },
                 ]}
               >
                 Data File
               </Text>
-              <Text style={{ color: colorScheme === "dark" ? "white" : "red" }}>
-                {" "}
-                *
-              </Text>
+              <Text style={{ color: isDark ? "white" : "red" }}> *</Text>
             </View>
 
             <View
@@ -378,14 +393,22 @@ export default function Index() {
                 autoCorrect={false}
                 editable={false}
                 placeholder="Upload a file ..."
-                placeholderTextColor={
-                  colorScheme === "dark" ? "black" : "#585858"
-                }
-                style={styles.inputControl}
+                placeholderTextColor={isDark ? "#fff" : "#585858"}
+                style={[
+                  styles.inputControl,
+                  {
+                    backgroundColor: isDark ? "transparent" : "#fff",
+                    color: isDark ? "#fff" : "#585858",
+                  },
+                ]}
                 value={form.fileName}
               />
               <Pressable style={styles.iconButton} onPress={openFilePicker}>
-                <Ionicons name="cloud-upload-outline" size={24} color="#555" />
+                <Ionicons
+                  name="cloud-upload-outline"
+                  size={24}
+                  color={isDark ? "#fff" : "#555"}
+                />
               </Pressable>
               <input
                 ref={fileInputRef}
@@ -420,7 +443,12 @@ export default function Index() {
                 <View
                   style={[
                     styles.btn,
-                    { opacity: colorScheme === "dark" ? 0.8 : 1 },
+                    {
+                      opacity: isDark ? 0.8 : 1,
+                      backgroundColor: isDark ? "#333333" : "#138f49",
+                      borderWidth: 1,
+                      borderColor: isDark ? "#5e5e5a" : "#e2e0d8",
+                    },
                   ]}
                 >
                   <Text style={styles.btnText}>Submit</Text>
@@ -435,14 +463,24 @@ export default function Index() {
                   style={[
                     styles.btn,
                     {
-                      backgroundColor:
-                        colorScheme === "dark"
-                          ? "#A1A1A3"
-                          : "rgba(97, 85, 66, 0.74)",
+                      // backgroundColor:
+                      //   isDark
+                      //     ? "#A1A1A3"
+                      //     : "rgba(97, 85, 66, 0.74)",
+                      backgroundColor: isDark ? "" : "#615542",
+                      borderColor: isDark ? "#5e5e5a" : "#e2e0d8",
+                      borderWidth: 1,
                     },
                   ]}
                 >
-                  <Text style={styles.btnText}>Cancel</Text>
+                  <Text
+                    style={[
+                      styles.btnText,
+                      { fontFamily: isDark ? "OutFit" : "OutFitBold" },
+                    ]}
+                  >
+                    Cancel
+                  </Text>
                 </View>
               </TouchableOpacity>
             </View>
@@ -456,7 +494,11 @@ export default function Index() {
           }}
         >
           <TouchableOpacity onPress={() => router.push("/register")}>
-            <FontAwesome name="user-plus" size={24} color="black" />
+            <FontAwesome
+              name="user-plus"
+              size={24}
+              color={isDark ? "white" : "black"}
+            />
           </TouchableOpacity>
         </View>
       </View>
@@ -475,7 +517,7 @@ const styles = StyleSheet.create({
   servicesCard: {
     // height: 300,
     width: "80%",
-    backgroundColor: "#F9F9F9",
+    // backgroundColor: "#F9F9F9",
     marginHorizontal: 20,
     padding: 15,
     borderRadius: 15,
@@ -484,7 +526,7 @@ const styles = StyleSheet.create({
     ShadowRadius: 10,
     ShadowOpacity: 0.1,
     elevation: 5,
-    boxShadow: "0 4px 8px rgba(0, 0, 0, 0.5)",
+    // boxShadow: "0 4px 8px rgba(0, 0, 0, 0.5)",
     marginBottom: 30,
     alignSelf: "center",
     gap: 20,
@@ -508,12 +550,10 @@ const styles = StyleSheet.create({
   },
   inputControl: {
     height: 50,
-    backgroundColor: "#fff",
     paddingHorizontal: 16,
     borderRadius: 12,
     fontSize: 15,
     fontWeight: "500",
-    color: "#585858",
     fontFamily: "OutFit",
     borderWidth: 1,
     borderColor: "#C9D3DB",

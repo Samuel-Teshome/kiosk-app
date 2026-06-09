@@ -32,6 +32,7 @@ export default function TabTwoScreen() {
   const { width, height } = useWindowDimensions();
   const isMobile = width < 480;
   const colorScheme = useColorScheme();
+  const isDark = colorScheme === "dark";
 
   // const BASE_URL = process.env.EXPO_PUBLIC_BASE_URL;
   const hostname = window.location.hostname;
@@ -242,6 +243,13 @@ export default function TabTwoScreen() {
             height: isMobile ? 150 : 80,
             marginBottom: 5,
             marginTop: 10,
+            backgroundColor: isDark ? "" : "#F9F9F9",
+            ShadowColor: isDark ? "white" : "black",
+            boxShadow: isDark
+              ? "0 4px 8px rgba(255, 255, 255, 0.5)"
+              : "0 4px 8px rgba(0, 0, 0, 0.5)",
+            borderWidth: isDark ? 1 : 0,
+            borderColor: isDark ? "#5e5e5a" : "#e2e0d8",
           },
         ]}
       >
@@ -297,7 +305,12 @@ export default function TabTwoScreen() {
             <View
               style={[
                 styles.btn,
-                { opacity: colorScheme === "dark" ? 0.8 : 1 },
+                {
+                  opacity: isDark ? 0.8 : 1,
+                  backgroundColor: isDark ? "#333333" : "#138f49",
+                  borderWidth: 1,
+                  borderColor: isDark ? "#5e5e5a" : "#e2e0d8",
+                },
               ]}
             >
               <Text style={styles.btnText}>Filter</Text>
@@ -371,7 +384,7 @@ export default function TabTwoScreen() {
         </View>
         <TouchableOpacity onPress={() => filterData()}>
           <View
-            style={[styles.btn, { opacity: colorScheme === "dark" ? 0.8 : 1 }]}
+            style={[styles.btn, { opacity: isDark ? 0.8 : 1 }]}
           >
             <Text style={styles.btnText}>Filter</Text>
           </View>
@@ -383,8 +396,26 @@ export default function TabTwoScreen() {
         keyExtractor={(item) => item.id}
         contentContainerStyle={styles.servicesCardContainer}
         renderItem={({ item: content }) => (
-          <View style={styles.servicesCard}>
-            <Text style={styles.serviceName} numberOfLines={1}>
+          <View
+            style={[
+              styles.servicesCard,
+              {
+                ShadowColor: isDark ? "white" : "black",
+                boxShadow: isDark
+                  ? "0 4px 8px rgba(255, 255, 255, 0.5)"
+                  : "0 4px 8px rgba(0, 0, 0, 0.5)",
+                borderWidth: isDark ? 1 : 0,
+                borderColor: isDark ? "#5e5e5a" : "#e2e0d8",
+              },
+            ]}
+          >
+            <Text
+              style={[
+                styles.serviceName,
+                { color: isDark ? "#fff" : "#102714" },
+              ]}
+              numberOfLines={1}
+            >
               {content.videoTitle}
             </Text>
             <TouchableOpacity
@@ -436,9 +467,9 @@ export default function TabTwoScreen() {
                       borderRadius: 10,
                       paddingHorizontal: 5,
                       height: "50%",
-                      backgroundColor:
-                        colorScheme === "dark" ? "black" : "#334fff",
-                      borderColor: colorScheme === "dark" ? "black" : "#334fff",
+                      backgroundColor: isDark ? "black" : "#334fff",
+                      borderWidth: isDark ? 1 : 0,
+                      borderColor: isDark ? "#5e5e5a" : "#334fff",
                     }}
                   >
                     <FontAwesome
@@ -466,9 +497,9 @@ export default function TabTwoScreen() {
                       borderRadius: 10,
                       paddingHorizontal: 5,
                       height: "50%",
-                      backgroundColor:
-                        colorScheme === "dark" ? "black" : "#334fff",
-                      borderColor: colorScheme === "dark" ? "black" : "#334fff",
+                      backgroundColor: isDark ? "black" : "#334fff",
+                      borderWidth: isDark ? 1 : 0,
+                      borderColor: isDark ? "#5e5e5a" : "#334fff",
                     }}
                   >
                     {content.categoryId == 1 ? (
@@ -513,9 +544,9 @@ export default function TabTwoScreen() {
                       borderRadius: 10,
                       paddingHorizontal: 5,
                       height: "50%",
-                      backgroundColor:
-                        colorScheme === "dark" ? "black" : "#334fff",
-                      borderColor: colorScheme === "dark" ? "black" : "#334fff",
+                      backgroundColor: isDark ? "black" : "#334fff",
+                      borderWidth: isDark ? 1 : 0,
+                      borderColor: isDark ? "#5e5e5a" : "#334fff",
                     }}
                   >
                     <Feather
@@ -540,7 +571,7 @@ export default function TabTwoScreen() {
                     <FontAwesome
                       name="youtube-play"
                       size={36}
-                      color={colorScheme === "dark" ? "black" : "red"}
+                      color={isDark ? "#fff" : "red"}
                     />
                   </Pressable>
                 </View>
@@ -608,10 +639,7 @@ export default function TabTwoScreen() {
         }
         ListEmptyComponent={
           <Text
-            style={[
-              styles.headerText,
-              { color: colorScheme === "dark" ? "white" : "#102714" },
-            ]}
+            style={[styles.headerText, { color: isDark ? "white" : "#102714" }]}
           >
             No content available.
           </Text>
@@ -655,7 +683,7 @@ const styles = StyleSheet.create({
   servicesCard: {
     height: 300,
     width: 300,
-    backgroundColor: "#F9F9F9",
+    // backgroundColor: "#F9F9F9",
     marginHorizontal: 20,
     padding: 15,
     borderRadius: 15,
@@ -664,13 +692,12 @@ const styles = StyleSheet.create({
     ShadowRadius: 10,
     ShadowOpacity: 0.1,
     elevation: 5,
-    boxShadow: "0 4px 8px rgba(0, 0, 0, 0.5)",
+    // boxShadow: "0 4px 8px rgba(0, 0, 0, 0.5)",
     marginBottom: 30,
   },
   serviceName: {
     fontSize: 20,
     fontFamily: "OutFit",
-    color: "#102714",
   },
   closeButton: {
     position: "absolute",
