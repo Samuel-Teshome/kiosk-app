@@ -72,6 +72,7 @@ export default function Index() {
     { id: "12", name: "8028 Altitude Menus" },
     { id: "13", name: "8028 Soil Type Menus" },
     { id: "14", name: "8028 Audio Contents" },
+    { id: "15", name: "8028 Livestock Menus" },
   ]);
   const handleDropdownChange = (fieldName) => (callback) => {
     const selectedValue = callback(form[fieldName]);
@@ -204,6 +205,8 @@ export default function Index() {
       url = `${BASE_URL}/api/8028_soil_type_menus`;
     } else if (form.type == 14) {
       url = `${BASE_URL}/api/8028_audio_contents`;
+    } else if (form.type == 15) {
+      url = `${BASE_URL}/api/8028_livestock_menus`;
     }
 
     try {
