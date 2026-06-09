@@ -1,4 +1,7 @@
+import atiLogoImgdark from "@/assets/images/ati-logo-dark.png";
+import atiLogoImgMobile from "@/assets/images/ati-logo-mobile.png";
 import atiLogoImg from "@/assets/images/ati-logo.png";
+import moaLogoImgMobile from "@/assets/images/moa-logo-mobile.png";
 import moaLogoImg from "@/assets/images/moa-logo.png";
 import { useColorScheme } from "@/hooks/useColorScheme";
 // import Constants from "expo-constants";
@@ -20,6 +23,7 @@ const HeaderBar2 = () => {
   const isDesktop = width >= 1024;
   const scaleFont = (size) => (width / 375) * size;
   const colorScheme = useColorScheme();
+  const isDark = colorScheme === "dark";
   const [atLeastOneUser, setAtLeastOneUser] = useState();
 
   // const BASE_URL = process.env.EXPO_PUBLIC_BASE_URL;
@@ -66,8 +70,8 @@ const HeaderBar2 = () => {
       >
         <View
           style={{
-            // flexDirection: "row",
-            flexDirection: isMobile ? "column" : "row",
+            flexDirection: "row",
+            // flexDirection: isMobile ? "column" : "row",
             justifyContent: "center",
             alignItems: "center",
             gap: isMobile ? 0 : 40,
@@ -84,19 +88,19 @@ const HeaderBar2 = () => {
             style={[
               styles.headerImg,
               {
-                width: "100%",
-                maxWidth: 250,
-                height: 100,
+                width: isMobile ? "20%" : "20%",
+                height: isMobile ? "60%" : 100,
               },
             ]}
-            source={moaLogoImg}
+            // source={moaLogoImg}
+            source={isMobile ? moaLogoImgMobile : moaLogoImg}
           />
           <Text
             style={[
               styles.headerText,
               {
                 color: colorScheme === "dark" ? "white" : "#102714",
-                // fontSize: scaleFont(20),
+                fontSize: isMobile ? 30 : 40,
               },
             ]}
           >
@@ -106,16 +110,18 @@ const HeaderBar2 = () => {
             alt="App Logo"
             // contentFit="contain"
             // style={[styles.headerImg, { height: 150 }]}
-            // resizeMode="contain"
+            resizeMode="contain"
             style={[
               styles.headerImg,
               {
-                width: "100%",
-                maxWidth: 250,
-                height: 100,
+                width: isMobile ? "20%" : "20%",
+                height: isMobile ? "60%" : 100,
               },
             ]}
-            source={atiLogoImg}
+            // source={atiLogoImg}
+            source={
+              isMobile ? atiLogoImgMobile : isDark ? atiLogoImgdark : atiLogoImg
+            }
           />
         </View>
       </View>
@@ -128,12 +134,9 @@ export default HeaderBar2;
 
 const styles = StyleSheet.create({
   headerImg: {
-    width: 350,
-    height: 150,
     alignSelf: "center",
   },
   headerText: {
-    fontSize: 40,
     fontFamily: "OutFitBold",
     marginVertical: 10,
   },
