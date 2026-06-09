@@ -32,6 +32,7 @@ import HeaderBar from "../../components/HeaderBar";
 export default function HomeScreen() {
   const opacity = useRef(new Animated.Value(1)).current;
   const colorScheme = useColorScheme();
+  const isDark = colorScheme === "dark";
   const { width, height } = useWindowDimensions();
   const isMobile = width < 480;
   const [atLeastOneUser, setAtLeastOneUser] = useState();
@@ -68,9 +69,12 @@ export default function HomeScreen() {
   };
 
   const [languageCode, setLanguageCode] = useState(0);
+  const [language8028Code, setLanguage8028Code] = useState(0);
   const [topMainMenuCode, setTopMainMenuCode] = useState(0);
   const [mainMenuCode, setMainMenuCode] = useState(0);
   const [subMenuCode, setSubMenuCode] = useState(0);
+  const [livestockMenuCode, setLivestockMenuCode] = useState(0);
+  const [livestockSubMenuCode, setLivestockSubMenuCode] = useState(0);
   const [altitudeCode, setAltitudeCode] = useState(0);
   const [soilTypeCode, setSoilTypeCode] = useState(0);
   const [cropCode, setCropCode] = useState(0);
@@ -85,6 +89,8 @@ export default function HomeScreen() {
   const [_8028CropMenus, set_8028CropMenus] = useState([]);
   const [_8028AltitudeMenus, set_8028AltitudeMenus] = useState([]);
   const [_8028SoilTypeMenus, set_8028SoilTypeMenus] = useState([]);
+  const [_8028LivestockMenus, set_8028LivestockMenus] = useState([]);
+  const [_8028LivestockSubMenus, set_8028LivestockSubMenus] = useState([]);
   const [_8028AudioContent, set_8028AudioContent] = useState();
   const [_8028ContentPlayedLog, set_8028ContentPlayedLog] = useState("");
   const [showLanguageOptions, setShowLanguageOptions] = useState(false);
@@ -98,6 +104,8 @@ export default function HomeScreen() {
   const [showHHICropMenuST, setShowHHICropMenuST] = useState(false);
   const [showAltitudeMenu, setShowAltitudeMenu] = useState(false);
   const [showSoilTypeMenu, setShowSoilTypeMenu] = useState(false);
+  const [showLivestockMenu, setShowLivestockMenu] = useState(false);
+  const [showLivestockSubMenu, setShowLivestockSubMenu] = useState(false);
   const [showAudioPlayer, setShowAudioPlayer] = useState(false);
   const [selectedLanguageCode, setSelectedLanguageCode] = useState();
   const [selectedLanguageName, setSelectedLanguageName] = useState();
@@ -111,6 +119,11 @@ export default function HomeScreen() {
   const [showSubMenuLabel, setShowSubMenuLabel] = useState(false);
   const [cropMenuLabel, setCropMenuLabel] = useState();
   const [showCropMenuLabel, setShowCropMenuLabel] = useState(false);
+  const [showLivestockMenuLabel, setShowLivestockMenuLabel] = useState(false);
+  const [livestockMenuLabel, setLivestockMenuLabel] = useState();
+  const [showLivestockSubMenuLabel, setShowLivestockSubMenuLabel] =
+    useState(false);
+  const [livestockSubMenuLabel, setLivestockSubMenuLabel] = useState();
   const [showSoilTypeCropMenuLabel, setShowSoilTypeCropMenuLabel] =
     useState(false);
   const [altitudeMenuLabel, setAltitudeMenuLabel] = useState();
@@ -231,6 +244,7 @@ export default function HomeScreen() {
   const selectLanguage = (language) => {
     setSelectedLanguageCode(language.code);
     setLanguageCode(language.code);
+    setLanguage8028Code(language.code8028);
     setSelectedLanguageName(language.displayName);
     setShowLanguageOptions(false);
     setShowTopMenu(true);
@@ -260,7 +274,7 @@ export default function HomeScreen() {
     setShowSoilTypeMenu(false);
     // setMainMenuLabel(topMenu.displayName);
     setTopMenuLabel(topMenu.displayName);
-    setTopMainMenuCode(topMenu.code);
+    setTopMainMenuCode(topMenu.code8028);
     setShowTopMenuLabel(true);
     // setShowMainMenuLabel(true);
     get8028MainMenu(topMenu.id);
@@ -325,6 +339,18 @@ export default function HomeScreen() {
       setSoilTypeCode(0);
       cropCodes = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14];
       get8028CropMenu(selectedLanguageCode, typeOfCrop, cropCodes);
+    } else if (subMenu.nextMenu == "soCropMenu") {
+      setShowCropMenu(true);
+      setAltitudeCode(0);
+      setSoilTypeCode(0);
+      cropCodes = [1, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14];
+      get8028CropMenu(selectedLanguageCode, typeOfCrop, cropCodes);
+    } else if (subMenu.nextMenu == "so12CropMenu") {
+      setShowCropMenu(true);
+      setAltitudeCode(0);
+      setSoilTypeCode(0);
+      cropCodes = [1, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13];
+      get8028CropMenu(selectedLanguageCode, typeOfCrop, cropCodes);
     } else if (subMenu.nextMenu == "13cropMenu") {
       setShowCropMenu(true);
       setAltitudeCode(0);
@@ -357,7 +383,50 @@ export default function HomeScreen() {
     } else if (subMenu.nextMenu == "altitudeMenu") {
       setShowAltitudeMenu(true);
       get8028AltitudeMenu(selectedLanguageCode);
+    } else if (subMenu.nextMenu == "LivestockMenu") {
+      setShowLivestockMenu(true);
+      get8028LivestockMenu(subMenu.id, 1);
+    } else {
+      setShowAudioPlayer(true);
+      get8028Content(subMenu, "SubMenu");
+      setBackingCropList("SubMenu");
     }
+  };
+
+  const selectLivestockMenu = (livestockMenu) => {
+    setShowLanguageOptions(false);
+    setShowTopMenu(false);
+    setShowMainMenu(false);
+    setShowSubMenu(false);
+    setShow8CropMenu(false);
+    setLivestockMenuLabel(livestockMenu.displayName);
+    setShowLivestockMenuLabel(true);
+    setLivestockMenuCode(livestockMenu.code);
+    if (livestockMenu.nextMenu == "livestockSubMenu") {
+      setShowLivestockSubMenu(true);
+      setShowLivestockMenu(false);
+      get8028LivestockMenu(livestockMenu.id, 2);
+    } else {
+      get8028Content(livestockMenu, "LivestockMenu");
+      setShowLivestockMenu(false);
+      setShowAudioPlayer(true);
+      setBackingCropList("LivestockMenu");
+    }
+  };
+
+  const selectLivestockSubMenu = (livestockSubMenu) => {
+    setShowLanguageOptions(false);
+    setShowTopMenu(false);
+    setShowMainMenu(false);
+    setShowSubMenu(false);
+    setShow8CropMenu(false);
+    setShowLivestockSubMenu(false);
+    setLivestockSubMenuLabel(livestockSubMenu.displayName);
+    setLivestockSubMenuCode(livestockSubMenu.code);
+    setShowLivestockSubMenuLabel(true);
+    get8028Content(livestockSubMenu, "LivestockSubMenu");
+    setShowAudioPlayer(true);
+    setBackingCropList("LivestockSubMenu");
   };
 
   const selectAltitudeMenu = (altitudeMenu) => {
@@ -391,7 +460,7 @@ export default function HomeScreen() {
     setShowHHICropMenuM(false);
     setShowHHICropMenuST(false);
 
-    get8028Content(selectedCrop);
+    get8028Content(selectedCrop, "Crop");
   };
 
   const selectSoilTypeMenu = (soilTypeMenu) => {
@@ -405,39 +474,61 @@ export default function HomeScreen() {
     get8028CropMenu(selectedLanguageCode, typeOfCrop, cropCodes);
   };
 
-  const get8028Content = async (selectedCrop) => {
+  const get8028Content = async (selectedCrop, caller) => {
     // console.log("---==== Get 8028 Content ====---");
     // console.log("Selected Language: ", languageCode);
     // console.log("Selected Top Menu:", topMainMenuCode);
     // console.log("Selected Main Menu: ", mainMenuCode);
     // console.log("Selected Sub Menu: ", subMenuCode);
-    // console.log("Selected Altitiude: ", altitudeCode);
+    // console.log("Selected Livestock Menu: ", livestockMenuCode);
+    // console.log("Selected Livestock Sub Menu: ", livestockSubMenuCode);
+    // console.log("Selected Altitude: ", altitudeCode);
     // console.log("Selected Soil Type: ", soilTypeCode);
-    // console.log("Selected Crop Code: ", selectedCrop.code);
+    // console.log("Selected Crop Code: ", cropCode);
     // console.log("Selected Crop Code 8028: ", selectedCrop.code8028);
     setLoadingMenu(true);
+    livestockCode = livestockMenuCode;
+    crop8028Code = 0;
+    subMenu_code = subMenuCode;
+    switch (caller) {
+      case "SubMenu":
+        subMenu_code = selectedCrop.code;
+        livestockCode = 0;
+        break;
+      case "LivestockMenu":
+        livestockCode = selectedCrop.code;
+        crop8028Code = 0;
+        break;
+      case "LivestockSubMenu":
+        crop8028Code = selectedCrop.code;
+        break;
+      default:
+        crop8028Code = selectedCrop.code8028;
+        break;
+    }
+    // console.log("---==== Get 8028 Content ====---");
+    // console.log("Caller: ", caller);
+    // console.log("Selected: ", selectedCrop);
+    // console.log("Selected Language: ", language8028Code);
+    // console.log("Selected Top Menu:", topMainMenuCode);
+    // console.log("Selected Main Menu: ", mainMenuCode);
+    // console.log("Selected Sub Menu: ", subMenu_code);
+    // console.log("Selected Livestock Menu: ", livestockCode);
+    // console.log("Selected Livestock Sub Menu: ", livestockSubMenuCode);
+    // console.log("Selected Altitiude: ", altitudeCode);
+    // console.log("Selected Soil Type: ", soilTypeCode);
+    // console.log("Selected Crop Code: ", crop8028Code);
     try {
       fetch(
-        `${BASE_URL}/api/8028_audio_contents/${languageCode}/${topMainMenuCode}/${mainMenuCode}/${subMenuCode}/${altitudeCode}/${soilTypeCode}/${selectedCrop.code8028}`,
+        `${BASE_URL}/api/8028_audio_contents/${language8028Code}/${topMainMenuCode}/${mainMenuCode}/${subMenu_code}/${livestockCode}/${altitudeCode}/${soilTypeCode}/${crop8028Code}`,
       )
         .then((res) => res.json())
         .then((json) => {
           setLoadingMenu(false);
-          // console.log("@@@@@@@@@@@@@@@@@@@@");
-          // console.log(json[0]);
-          // console.log("@@@@@@@@@@@@@@@@@@@@");
-          set_8028AudioContent(`${BASE_URL}/${json[0].contentFile}`);
-          set_8028ContentPlayedLog(json[0].contentPlayedLog);
-          // for (const item of json) {
-          //   console.log("-=======================---------");
-          //   console.log(item);
-          //   console.log("-=======================---------");
-          //   const processed = {
-          //     ...item,
-          //   };
-
-          //   set_8028AudionContent((prev) => [...prev, processed]);
-          // }
+          if (json.length > 0) {
+            set_8028AudioContent(`${BASE_URL}/${json[0].contentFile}`);
+            set_8028ContentPlayedLog(json[0].contentPlayedLog);
+          }
         })
         .catch((error) => {
           console.error("API Error:", error);
@@ -594,6 +685,33 @@ export default function HomeScreen() {
     }
   };
 
+  const get8028LivestockMenu = async (subMenuId, typeOfMenu) => {
+    setLoadingMenu(true);
+    try {
+      fetch(`${BASE_URL}/api/8028_livestock_menus/${subMenuId}/${typeOfMenu}`)
+        .then((res) => res.json())
+        .then((json) => {
+          setLoadingMenu(false);
+          for (const item of json) {
+            const processed = {
+              ...item,
+            };
+            if (typeOfMenu == 1) {
+              set_8028LivestockMenus((prev) => [...prev, processed]);
+            } else {
+              set_8028LivestockSubMenus((prev) => [...prev, processed]);
+            }
+          }
+        })
+        .catch((error) => {
+          console.error("API Error:", error);
+          setLoadingMenu(false);
+        });
+    } catch (error) {
+      console.error("Error deleting record:", error);
+    }
+  };
+
   const getBackToPrevious = (currentMenu) => {
     switch (currentMenu) {
       case "TopMenu":
@@ -686,6 +804,30 @@ export default function HomeScreen() {
         set_8028CropMenus([]);
         break;
 
+      case "LivestockMenu":
+        setShowTopMenu(false);
+        setShowLanguageOptions(false);
+        setShowMainMenu(false);
+        setShowSubMenu(true);
+        setShowSubMenuLabel(false);
+        setSubMenuLabel("");
+        setShowLivestockMenu(false);
+        setShowLivestockMenuLabel(false);
+        setLivestockMenuLabel("");
+        set_8028LivestockMenus([]);
+        setShowAudioPlayer(false);
+        break;
+
+      case "LivestockSubMenu":
+        setShowLivestockMenu(true);
+        setShowLivestockSubMenu(false);
+        setShowLivestockSubMenuLabel(false);
+        setShowLivestockMenuLabel(false);
+        setLivestockSubMenuLabel("");
+        set_8028LivestockSubMenus([]);
+        setShowAudioPlayer(false);
+        break;
+
       case "AltitudeMenu":
         setShowTopMenu(false);
         setShowLanguageOptions(false);
@@ -721,6 +863,12 @@ export default function HomeScreen() {
 
       case "AudioPlayer":
         setShowAudioPlayer(false);
+
+        if (backingCropList == "SubMenu") {
+          setShowSubMenu(true);
+          setShowSubMenuLabel(false);
+        }
+
         if (backingCropList == "Full HHI ST Crop") {
           setShowSoilTypeCropMenuLabel(false);
         } else {
@@ -735,6 +883,15 @@ export default function HomeScreen() {
         setShowHHICropMenuST(
           backingCropList == "Full HHI ST Crop" ? true : false,
         );
+        if (backingCropList == "LivestockMenu") {
+          setShowLivestockMenu(true);
+          setShowLivestockMenuLabel(false);
+        }
+        if (backingCropList == "LivestockSubMenu") {
+          setShowLivestockSubMenu(true);
+          setShowLivestockSubMenuLabel(false);
+          setBackingCropList("LivestockMenu");
+        }
         break;
 
       default:
@@ -770,10 +927,13 @@ export default function HomeScreen() {
                     set_8028MainMenus([]);
                     set_8028SubMenus([]);
                     set_8028CropMenus([]);
+                    set_8028LivestockMenus([]);
                     setShowLanguageOptions(true);
                     setShowTopMenu(false);
                     setShowMainMenu(false);
                     setShowSubMenu(false);
+                    setShowLivestockMenu(false);
+                    setShowLivestockSubMenu(false);
                     setShowCropMenu(false);
                     setShow8CropMenu(false);
                     setShowHHICropMenu(false);
@@ -838,7 +998,7 @@ export default function HomeScreen() {
             style={[
               styles.headerText,
               {
-                color: colorScheme === "dark" ? "white" : "#102714",
+                color: isDark ? "white" : "#102714",
                 fontSize: isMobile ? 30 : 40,
               },
             ]}
@@ -856,7 +1016,15 @@ export default function HomeScreen() {
       >
         <Pressable style={styles.overlay} onPress={() => closeModal()}>
           <Pressable
-            style={[styles.modalContainer, { width: isMobile ? "90%" : "40%" }]}
+            style={[
+              styles.modalContainer,
+              {
+                width: isMobile ? "90%" : "40%",
+                backgroundColor: isDark ? "#000" : "#fff",
+                borderWidth: isDark ? 1 : 0,
+                borderColor: isDark ? "#5e5e5a" : "#e2e0d8",
+              },
+            ]}
             onPressIn={() => {}}
           >
             <View style={styles.header}>
@@ -869,7 +1037,13 @@ export default function HomeScreen() {
                   source={ati8028LogoImg}
                 />
                 <Text
-                  style={[styles.headerTitle, { fontSize: isMobile ? 18 : 30 }]}
+                  style={[
+                    styles.headerTitle,
+                    {
+                      fontSize: isMobile ? 18 : 30,
+                      color: isDark ? "#fff" : "#615542",
+                    },
+                  ]}
                 >
                   Farmers' Hotline
                 </Text>
@@ -879,25 +1053,18 @@ export default function HomeScreen() {
                 <AntDesign
                   name="closecircle"
                   size={isMobile ? 18 : 24}
-                  color="#555"
+                  color={isDark ? "#fff" : "#555"}
                 />
               </Pressable>
             </View>
 
-            <ScrollView
-              style={styles.content}
-              contentContainerStyle={{
-                paddingBottom: 16,
-                height: "100%",
-              }}
-              showsVerticalScrollIndicator={false}
-            >
+            <View style={{ padding: 10 }}>
               {loadingMenu && <ActivityIndicator />}
               <View
                 style={{
-                  marginBottom: 40,
+                  marginBottom: 20,
                   width: "100%",
-                  gap: 20,
+                  gap: 10,
                 }}
               >
                 {showLanguageOptions && (
@@ -906,8 +1073,9 @@ export default function HomeScreen() {
                       styles.headerTitle,
                       {
                         fontSize: isMobile ? 18 : 20,
-                        color: "#008000",
+                        // color: "#008000",
                         textAlign: "center",
+                        color: isDark ? "#fff" : "#008000",
                       },
                     ]}
                   >
@@ -942,14 +1110,18 @@ export default function HomeScreen() {
                                               ? "HHICropMenuST"
                                               : showAudioPlayer
                                                 ? "AudioPlayer"
-                                                : "",
+                                                : showLivestockMenu
+                                                  ? "LivestockMenu"
+                                                  : showLivestockSubMenu
+                                                    ? "LivestockSubMenu"
+                                                    : "",
                         )
                       }
                     >
                       <MaterialIcons
                         name="arrow-back"
-                        size={24}
-                        color="#808000"
+                        size={isMobile ? 24 : 28}
+                        color={isDark ? "#fff" : "#808000"}
                       />
                     </TouchableOpacity>
                     <View
@@ -966,13 +1138,13 @@ export default function HomeScreen() {
                           styles.headerTitle,
                           {
                             fontSize: isMobile ? 14 : 16,
-                            borderColor: "#625641",
-                            backgroundColor: "#CCCFCF",
+                            borderColor: isDark ? "#fff" : "#625641",
+                            backgroundColor: isDark ? "#000" : "#CCCFCF",
                             borderWidth: 2,
                             borderRadius: 10,
                             paddingHorizontal: 5,
                             paddingVertical: 2,
-                            color: "#625641",
+                            color: isDark ? "#fff" : "#625641",
                           },
                         ]}
                       >
@@ -991,10 +1163,10 @@ export default function HomeScreen() {
                           styles.headerTitle,
                           {
                             fontSize: isMobile ? 14 : 16,
-                            borderColor: "#009147",
-                            backgroundColor: "#CCCFCF",
+                            borderColor: isDark ? "#fff" : "#009147",
+                            backgroundColor: isDark ? "#000" : "#CCCFCF",
                             borderWidth: 2,
-                            color: "#009147",
+                            color: isDark ? "#fff" : "#009147",
                             alignSelf: "center",
                             borderRadius: 10,
                             paddingHorizontal: 5,
@@ -1012,10 +1184,11 @@ export default function HomeScreen() {
                             styles.headerTitle,
                             {
                               fontSize: isMobile ? 14 : 16,
-                              // borderColor: "#FAA819",
-                              backgroundColor: "#5E5D5D",
+                              borderWidth: 2,
+                              borderColor: isDark ? "#fff" : "#FAA819",
+                              backgroundColor: isDark ? "#000" : "#5E5D5D",
                               // borderWidth: 2,
-                              color: "#FAA819",
+                              color: isDark ? "#fff" : "#FAA819",
                               alignSelf: "center",
                               borderRadius: 10,
                               paddingHorizontal: 5,
@@ -1032,10 +1205,11 @@ export default function HomeScreen() {
                             styles.headerTitle,
                             {
                               fontSize: isMobile ? 14 : 16,
-                              // borderColor: "#FFDB00",
-                              backgroundColor: "#5E5D5D",
+                              borderWidth: 2,
+                              borderColor: isDark ? "#fff" : "#FFDB00",
+                              backgroundColor: isDark ? "#000" : "#5E5D5D",
                               // borderWidth: 2,
-                              color: "#FFDB00",
+                              color: isDark ? "#fff" : "#FFDB00",
                               alignSelf: "center",
                               borderRadius: 10,
                               paddingHorizontal: 5,
@@ -1052,7 +1226,7 @@ export default function HomeScreen() {
                             styles.headerTitle,
                             {
                               fontSize: isMobile ? 14 : 16,
-                              borderColor: "#000",
+                              borderColor: isDark ? "#fff" : "#000",
                               backgroundColor: "#000",
                               borderWidth: 2,
                               color: "#fff",
@@ -1066,16 +1240,58 @@ export default function HomeScreen() {
                           {cropMenuLabel}
                         </Text>
                       )}
+                      {showLivestockMenuLabel && (
+                        <Text
+                          style={[
+                            styles.headerTitle,
+                            {
+                              fontSize: isMobile ? 14 : 16,
+                              borderColor: isDark ? "#fff" : "#000",
+                              backgroundColor: "#000",
+                              borderWidth: 2,
+                              color: "#fff",
+                              alignSelf: "center",
+                              borderRadius: 10,
+                              paddingHorizontal: 5,
+                              paddingVertical: 2,
+                            },
+                          ]}
+                        >
+                          {livestockMenuLabel}
+                        </Text>
+                      )}
+                      {showLivestockSubMenuLabel && (
+                        <Text
+                          style={[
+                            styles.headerTitle,
+                            {
+                              fontSize: isMobile ? 14 : 16,
+                              borderWidth: 2,
+                              borderColor: isDark ? "#fff" : "#91AC34",
+                              backgroundColor: isDark ? "#000" : "#2E2D2D",
+                              // borderWidth: 2,
+                              color: isDark ? "#fff" : "#91AC34",
+                              alignSelf: "center",
+                              borderRadius: 10,
+                              paddingHorizontal: 5,
+                              paddingVertical: 2,
+                            },
+                          ]}
+                        >
+                          {livestockSubMenuLabel}
+                        </Text>
+                      )}
                       {showAltitudeMenuLabel && (
                         <Text
                           style={[
                             styles.headerTitle,
                             {
                               fontSize: isMobile ? 14 : 16,
-                              // borderColor: "#91AC34",
-                              backgroundColor: "#2E2D2D",
+                              borderWidth: 2,
+                              borderColor: isDark ? "#fff" : "#91AC34",
+                              backgroundColor: isDark ? "#000" : "#2E2D2D",
                               // borderWidth: 2,
-                              color: "#91AC34",
+                              color: isDark ? "#fff" : "#91AC34",
                               alignSelf: "center",
                               borderRadius: 10,
                               paddingHorizontal: 5,
@@ -1092,10 +1308,10 @@ export default function HomeScreen() {
                             styles.headerTitle,
                             {
                               fontSize: isMobile ? 14 : 16,
-                              // borderColor: "#6FCCDD",
-                              backgroundColor: "#5E5D5D",
-                              // borderWidth: 2,
-                              color: "#6FCCDD",
+                              borderColor: isDark ? "#fff" : "#6FCCDD",
+                              backgroundColor: isDark ? "#000" : "#5E5D5D",
+                              borderWidth: 2,
+                              color: isDark ? "#fff" : "#6FCCDD",
                               alignSelf: "center",
                               borderRadius: 10,
                               paddingHorizontal: 5,
@@ -1112,7 +1328,7 @@ export default function HomeScreen() {
                             styles.headerTitle,
                             {
                               fontSize: isMobile ? 14 : 16,
-                              borderColor: "#000",
+                              borderColor: isDark ? "#fff" : "#000",
                               borderWidth: 2,
                               backgroundColor: "#000",
                               color: "#fff",
@@ -1131,6 +1347,17 @@ export default function HomeScreen() {
                 )}
                 <ColorBar3 />
               </View>
+            </View>
+            <ScrollView
+              style={styles.content}
+              contentContainerStyle={
+                {
+                  // paddingBottom: 16,
+                  // height: "100%",
+                }
+              }
+              showsVerticalScrollIndicator={false}
+            >
               {showLanguageOptions && (
                 <View
                   style={{
@@ -1151,7 +1378,13 @@ export default function HomeScreen() {
                         key={language.code}
                         style={[
                           styles.cancelBtn,
-                          { flexDirection: "row", gap: 10 },
+                          {
+                            flexDirection: "row",
+                            gap: 10,
+                            backgroundColor: isDark ? "#5e5e5a" : "#000080",
+                            borderWidth: isDark ? 1 : 0,
+                            borderColor: "#5e5e5a",
+                          },
                         ]}
                         onPress={() => selectLanguage(language)}
                       >
@@ -1194,6 +1427,9 @@ export default function HomeScreen() {
                             alignItems: "center",
                             gap: 10,
                             width: isMobile ? "80%" : "90%",
+                            backgroundColor: isDark ? "#5e5e5a" : "#000080",
+                            borderWidth: isDark ? 1 : 0,
+                            borderColor: "#5e5e5a",
                           },
                         ]}
                         onPress={() => selectTopMenu(topMenu)}
@@ -1246,6 +1482,9 @@ export default function HomeScreen() {
                             alignItems: "center",
                             gap: 10,
                             width: isMobile ? "80%" : "90%",
+                            backgroundColor: isDark ? "#5e5e5a" : "#000080",
+                            borderWidth: isDark ? 1 : 0,
+                            borderColor: "#5e5e5a",
                           },
                         ]}
                         onPress={() => selectMainMenu(mainMenu)}
@@ -1297,6 +1536,9 @@ export default function HomeScreen() {
                             alignItems: "center",
                             gap: 10,
                             width: isMobile ? "80%" : "90%",
+                            backgroundColor: isDark ? "#5e5e5a" : "#000080",
+                            borderWidth: isDark ? 1 : 0,
+                            borderColor: "#5e5e5a",
                           },
                         ]}
                         onPress={() => selectSubMenu(subMenu)}
@@ -1316,6 +1558,114 @@ export default function HomeScreen() {
                           ]}
                         >
                           {subMenu.displayName}
+                        </Text>
+                      </TouchableOpacity>
+                    );
+                  })}
+                </View>
+              )}
+
+              {showLivestockMenu && (
+                <View
+                  style={{
+                    flexDirection: "row",
+                    justifyContent: "center",
+                    alignSelf: "center",
+                    gap: 20,
+                    flexWrap: "wrap",
+                    width: isMobile ? "90%" : "80%",
+                  }}
+                >
+                  {_8028LivestockMenus.map((livestockMenu) => {
+                    const iconName =
+                      "numeric-" + livestockMenu.code + "-box-multiple";
+
+                    return (
+                      <TouchableOpacity
+                        key={livestockMenu.code}
+                        style={[
+                          styles.cancelBtn,
+                          {
+                            flexDirection: isMobile ? "column" : "row",
+                            alignItems: "center",
+                            gap: 10,
+                            width: isMobile ? "80%" : "90%",
+                            backgroundColor: isDark ? "#5e5e5a" : "#000080",
+                            borderWidth: isDark ? 1 : 0,
+                            borderColor: "#5e5e5a",
+                          },
+                        ]}
+                        onPress={() => selectLivestockMenu(livestockMenu)}
+                      >
+                        <MaterialCommunityIcons
+                          name={iconName}
+                          size={20}
+                          color="#B8FFB8"
+                        />
+                        <Text
+                          style={[
+                            styles.cancelText,
+                            {
+                              fontSize: isMobile ? 16 : 18,
+                              textAlign: "center",
+                            },
+                          ]}
+                        >
+                          {livestockMenu.displayName}
+                        </Text>
+                      </TouchableOpacity>
+                    );
+                  })}
+                </View>
+              )}
+
+              {showLivestockSubMenu && (
+                <View
+                  style={{
+                    flexDirection: "row",
+                    justifyContent: "center",
+                    alignSelf: "center",
+                    gap: 20,
+                    flexWrap: "wrap",
+                    width: isMobile ? "90%" : "80%",
+                  }}
+                >
+                  {_8028LivestockSubMenus.map((livestockSubMenu) => {
+                    const iconName =
+                      "numeric-" + livestockSubMenu.code + "-box-multiple";
+
+                    return (
+                      <TouchableOpacity
+                        key={livestockSubMenu.code}
+                        style={[
+                          styles.cancelBtn,
+                          {
+                            flexDirection: isMobile ? "column" : "row",
+                            alignItems: "center",
+                            gap: 10,
+                            width: isMobile ? "80%" : "90%",
+                            backgroundColor: isDark ? "#5e5e5a" : "#000080",
+                            borderWidth: isDark ? 1 : 0,
+                            borderColor: "#5e5e5a",
+                          },
+                        ]}
+                        onPress={() => selectLivestockSubMenu(livestockSubMenu)}
+                      >
+                        <MaterialCommunityIcons
+                          name={iconName}
+                          size={20}
+                          color="#B8FFB8"
+                        />
+                        <Text
+                          style={[
+                            styles.cancelText,
+                            {
+                              fontSize: isMobile ? 16 : 18,
+                              textAlign: "center",
+                            },
+                          ]}
+                        >
+                          {livestockSubMenu.displayName}
                         </Text>
                       </TouchableOpacity>
                     );
@@ -1348,6 +1698,9 @@ export default function HomeScreen() {
                             gap: 10,
                             justifyContent: "center",
                             width: "40%",
+                            backgroundColor: isDark ? "#5e5e5a" : "#000080",
+                            borderWidth: isDark ? 1 : 0,
+                            borderColor: "#5e5e5a",
                           },
                         ]}
                         onPress={() => selectCropMenu(cropMenu, "Full Crop")}
@@ -1399,6 +1752,9 @@ export default function HomeScreen() {
                             gap: 10,
                             justifyContent: "center",
                             width: "40%",
+                            backgroundColor: isDark ? "#5e5e5a" : "#000080",
+                            borderWidth: isDark ? 1 : 0,
+                            borderColor: "#5e5e5a",
                           },
                         ]}
                         onPress={() => selectCropMenu(cropMenu, "8 Crop")}
@@ -1450,6 +1806,9 @@ export default function HomeScreen() {
                             gap: 10,
                             justifyContent: "center",
                             width: "40%",
+                            backgroundColor: isDark ? "#5e5e5a" : "#000080",
+                            borderWidth: isDark ? 1 : 0,
+                            borderColor: "#5e5e5a",
                           },
                         ]}
                         onPress={() =>
@@ -1500,6 +1859,9 @@ export default function HomeScreen() {
                             gap: 10,
                             justifyContent: "center",
                             width: "40%",
+                            backgroundColor: isDark ? "#5e5e5a" : "#000080",
+                            borderWidth: isDark ? 1 : 0,
+                            borderColor: "#5e5e5a",
                           },
                         ]}
                         onPress={() =>
@@ -1545,6 +1907,9 @@ export default function HomeScreen() {
                             gap: 10,
                             justifyContent: "center",
                             width: "40%",
+                            backgroundColor: isDark ? "#5e5e5a" : "#000080",
+                            borderWidth: isDark ? 1 : 0,
+                            borderColor: "#5e5e5a",
                           },
                         ]}
                         onPress={() =>
@@ -1591,6 +1956,9 @@ export default function HomeScreen() {
                               gap: 10,
                               justifyContent: "center",
                               width: "40%",
+                              backgroundColor: isDark ? "#5e5e5a" : "#000080",
+                              borderWidth: isDark ? 1 : 0,
+                              borderColor: "#5e5e5a",
                             },
                           ]}
                           onPress={() => selectAltitudeMenu(altitudeMenu)}
@@ -1635,6 +2003,9 @@ export default function HomeScreen() {
                               flexDirection: "row",
                               gap: 10,
                               alignItems: "center",
+                              backgroundColor: isDark ? "#5e5e5a" : "#000080",
+                              borderWidth: isDark ? 1 : 0,
+                              borderColor: "#5e5e5a",
                             },
                           ]}
                           onPress={() => selectSoilTypeMenu(soilTypeMenu)}
@@ -1667,11 +2038,23 @@ export default function HomeScreen() {
                   <Text>Selected Altitiude: {altitudeCode}</Text>
                   <Text>Selected Soil Type: {soilTypeCode}</Text>
                   <Text>Selected Crop Code: selectedCrop</Text> */}
-                  <Text style={styles.title}>{_8028ContentPlayedLog}</Text>
+                  <Text
+                    style={[
+                      styles.title,
+                      { color: isDark ? "#fff" : "#008000" },
+                    ]}
+                  >
+                    {_8028ContentPlayedLog}
+                  </Text>
                   {/* <Animated.View style={{ opacity }}>
                     <Ionicons name="play-circle" size={20} color="#625641" />
                   </Animated.View> */}
-                  <Animated.View style={styles.subTitleContainer}>
+                  <Animated.View
+                    style={[
+                      styles.subTitleContainer,
+                      { backgroundColor: isDark ? "#5e5e5a" : "#DB806E" },
+                    ]}
+                  >
                     {languageCode == 1 ? (
                       <Text style={styles.subTitle}>
                         የኤክስቴንሽን ምክርን ለማዳመጥ ይህንን{" "}
@@ -1692,7 +2075,7 @@ export default function HomeScreen() {
                           <Ionicons
                             name="play-circle"
                             size={20}
-                            color="#625641"
+                            color="#fff"
                             style={{ textAlignVertical: "center" }}
                           />
                         </Animated.View>{" "}
@@ -1787,7 +2170,7 @@ const styles = StyleSheet.create({
     width: "50%",
     height: "100%",
     // backgroundColor: "#f0efe7",
-    backgroundColor: "#fff",
+    // backgroundColor: "#fff",
     borderRadius: 12,
     overflow: "hidden",
   },
