@@ -243,7 +243,7 @@ export default function TabTwoScreen() {
             height: isMobile ? 150 : 80,
             marginBottom: 5,
             marginTop: 10,
-            backgroundColor: isDark ? "" : "#F9F9F9",
+            backgroundColor: isDark ? "#323232" : "#F9F9F9",
             ShadowColor: isDark ? "white" : "black",
             boxShadow: isDark
               ? "0 4px 8px rgba(255, 255, 255, 0.5)"
@@ -406,6 +406,7 @@ export default function TabTwoScreen() {
                   : "0 4px 8px rgba(0, 0, 0, 0.5)",
                 borderWidth: isDark ? 1 : 0,
                 borderColor: isDark ? "#5e5e5a" : "#e2e0d8",
+                backgroundColor: isDark ? "#323232" : "#F9F9F9",
               },
             ]}
           >
@@ -467,7 +468,7 @@ export default function TabTwoScreen() {
                       borderRadius: 10,
                       paddingHorizontal: 5,
                       height: "50%",
-                      backgroundColor: isDark ? "black" : "#334fff",
+                      backgroundColor: isDark ? "#323232" : "#334fff",
                       borderWidth: isDark ? 1 : 0,
                       borderColor: isDark ? "#5e5e5a" : "#334fff",
                     }}
@@ -497,7 +498,7 @@ export default function TabTwoScreen() {
                       borderRadius: 10,
                       paddingHorizontal: 5,
                       height: "50%",
-                      backgroundColor: isDark ? "black" : "#334fff",
+                      backgroundColor: isDark ? "#323232" : "#334fff",
                       borderWidth: isDark ? 1 : 0,
                       borderColor: isDark ? "#5e5e5a" : "#334fff",
                     }}
@@ -544,7 +545,7 @@ export default function TabTwoScreen() {
                       borderRadius: 10,
                       paddingHorizontal: 5,
                       height: "50%",
-                      backgroundColor: isDark ? "black" : "#334fff",
+                      backgroundColor: isDark ? "#323232" : "#334fff",
                       borderWidth: isDark ? 1 : 0,
                       borderColor: isDark ? "#5e5e5a" : "#334fff",
                     }}

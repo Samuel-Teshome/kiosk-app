@@ -331,8 +331,8 @@ export default function HomeScreen() {
     setShowAltitudeMenu(false);
     setShowSoilTypeMenu(false);
     setShowHHICropMenuST(false);
-    cropCodes = [];
-    typeOfCrop = 1;
+    let cropCodes = [];
+    let typeOfCrop = 1;
     if (subMenu.nextMenu == "cropMenu") {
       setShowCropMenu(true);
       setAltitudeCode(0);
@@ -469,8 +469,8 @@ export default function HomeScreen() {
     setSoilTypeCode(soilTypeMenu.code);
     setShowSoilTypeMenuLabel(true);
     setShowHHICropMenuST(true);
-    cropCodes = [1, 2, 3, 4, 5, 6, 7];
-    typeOfCrop = 2;
+    let cropCodes = [1, 2, 3, 4, 5, 6, 7];
+    let typeOfCrop = 2;
     get8028CropMenu(selectedLanguageCode, typeOfCrop, cropCodes);
   };
 
@@ -487,9 +487,9 @@ export default function HomeScreen() {
     // console.log("Selected Crop Code: ", cropCode);
     // console.log("Selected Crop Code 8028: ", selectedCrop.code8028);
     setLoadingMenu(true);
-    livestockCode = livestockMenuCode;
-    crop8028Code = 0;
-    subMenu_code = subMenuCode;
+    let livestockCode = livestockMenuCode;
+    let crop8028Code = 0;
+    let subMenu_code = subMenuCode;
     switch (caller) {
       case "SubMenu":
         subMenu_code = selectedCrop.code;
@@ -909,11 +909,11 @@ export default function HomeScreen() {
             style={[
               styles.servicesCard,
               {
-                backgroundColor: isDark ? "" : "#F9F9F9",
                 ShadowColor: isDark ? "white" : "black",
                 boxShadow: isDark
                   ? "0 4px 8px rgba(255, 255, 255, 0.5)"
                   : "0 4px 8px rgba(0, 0, 0, 0.5)",
+                backgroundColor: isDark ? "#323232" : "#F9F9F9",
                 borderWidth: isDark ? 1 : 0,
                 borderColor: isDark ? "#5e5e5a" : "#e2e0d8",
               },
@@ -1047,7 +1047,7 @@ export default function HomeScreen() {
               styles.modalContainer,
               {
                 width: isMobile ? "90%" : "40%",
-                backgroundColor: isDark ? "#000" : "#fff",
+                backgroundColor: isDark ? "#131313" : "#fff",
                 borderWidth: isDark ? 1 : 0,
                 borderColor: isDark ? "#5e5e5a" : "#e2e0d8",
               },
@@ -1165,9 +1165,10 @@ export default function HomeScreen() {
                           styles.headerTitle,
                           {
                             fontSize: isMobile ? 14 : 16,
-                            borderColor: isDark ? "#fff" : "#625641",
-                            backgroundColor: isDark ? "#000" : "#CCCFCF",
+                            fontFamily: isDark ? "OutFit" : "OutFitBold",
+                            backgroundColor: isDark ? "#323232" : "#CCCFCF",
                             borderWidth: 2,
+                            borderColor: isDark ? "#5e5e5a" : "#625641",
                             borderRadius: 10,
                             paddingHorizontal: 5,
                             paddingVertical: 2,
@@ -1190,9 +1191,10 @@ export default function HomeScreen() {
                           styles.headerTitle,
                           {
                             fontSize: isMobile ? 14 : 16,
-                            borderColor: isDark ? "#fff" : "#009147",
-                            backgroundColor: isDark ? "#000" : "#CCCFCF",
+                            fontFamily: isDark ? "OutFit" : "OutFitBold",
+                            backgroundColor: isDark ? "#323232" : "#CCCFCF",
                             borderWidth: 2,
+                            borderColor: isDark ? "#5e5e5a" : "#009147",
                             color: isDark ? "#fff" : "#009147",
                             alignSelf: "center",
                             borderRadius: 10,
@@ -1211,10 +1213,10 @@ export default function HomeScreen() {
                             styles.headerTitle,
                             {
                               fontSize: isMobile ? 14 : 16,
+                              fontFamily: isDark ? "OutFit" : "OutFitBold",
+                              backgroundColor: isDark ? "#323232" : "#5E5D5D",
                               borderWidth: 2,
-                              borderColor: isDark ? "#fff" : "#FAA819",
-                              backgroundColor: isDark ? "#000" : "#5E5D5D",
-                              // borderWidth: 2,
+                              borderColor: isDark ? "#5e5e5a" : "#FAA819",
                               color: isDark ? "#fff" : "#FAA819",
                               alignSelf: "center",
                               borderRadius: 10,
@@ -1232,10 +1234,10 @@ export default function HomeScreen() {
                             styles.headerTitle,
                             {
                               fontSize: isMobile ? 14 : 16,
+                              fontFamily: isDark ? "OutFit" : "OutFitBold",
+                              backgroundColor: isDark ? "#323232" : "#5E5D5D",
                               borderWidth: 2,
-                              borderColor: isDark ? "#fff" : "#FFDB00",
-                              backgroundColor: isDark ? "#000" : "#5E5D5D",
-                              // borderWidth: 2,
+                              borderColor: isDark ? "#5e5e5a" : "#FFDB00",
                               color: isDark ? "#fff" : "#FFDB00",
                               alignSelf: "center",
                               borderRadius: 10,
@@ -1253,9 +1255,10 @@ export default function HomeScreen() {
                             styles.headerTitle,
                             {
                               fontSize: isMobile ? 14 : 16,
-                              borderColor: isDark ? "#fff" : "#000",
-                              backgroundColor: "#000",
+                              fontFamily: isDark ? "OutFit" : "OutFitBold",
+                              backgroundColor: isDark ? "#323232" : "#000",
                               borderWidth: 2,
+                              borderColor: isDark ? "#5e5e5a" : "#000",
                               color: "#fff",
                               alignSelf: "center",
                               borderRadius: 10,
@@ -1273,9 +1276,10 @@ export default function HomeScreen() {
                             styles.headerTitle,
                             {
                               fontSize: isMobile ? 14 : 16,
-                              borderColor: isDark ? "#fff" : "#000",
-                              backgroundColor: "#000",
+                              fontFamily: isDark ? "OutFit" : "OutFitBold",
+                              backgroundColor: isDark ? "#323232" : "#000",
                               borderWidth: 2,
+                              borderColor: isDark ? "#5e5e5a" : "#000",
                               color: "#fff",
                               alignSelf: "center",
                               borderRadius: 10,
@@ -1293,10 +1297,10 @@ export default function HomeScreen() {
                             styles.headerTitle,
                             {
                               fontSize: isMobile ? 14 : 16,
+                              fontFamily: isDark ? "OutFit" : "OutFitBold",
+                              backgroundColor: isDark ? "#323232" : "#2E2D2D",
                               borderWidth: 2,
-                              borderColor: isDark ? "#fff" : "#91AC34",
-                              backgroundColor: isDark ? "#000" : "#2E2D2D",
-                              // borderWidth: 2,
+                              borderColor: isDark ? "#5e5e5a" : "#91AC34",
                               color: isDark ? "#fff" : "#91AC34",
                               alignSelf: "center",
                               borderRadius: 10,
@@ -1314,10 +1318,10 @@ export default function HomeScreen() {
                             styles.headerTitle,
                             {
                               fontSize: isMobile ? 14 : 16,
+                              fontFamily: isDark ? "OutFit" : "OutFitBold",
+                              backgroundColor: isDark ? "#323232" : "#2E2D2D",
                               borderWidth: 2,
-                              borderColor: isDark ? "#fff" : "#91AC34",
-                              backgroundColor: isDark ? "#000" : "#2E2D2D",
-                              // borderWidth: 2,
+                              borderColor: isDark ? "#5e5e5a" : "#91AC34",
                               color: isDark ? "#fff" : "#91AC34",
                               alignSelf: "center",
                               borderRadius: 10,
@@ -1335,9 +1339,10 @@ export default function HomeScreen() {
                             styles.headerTitle,
                             {
                               fontSize: isMobile ? 14 : 16,
-                              borderColor: isDark ? "#fff" : "#6FCCDD",
-                              backgroundColor: isDark ? "#000" : "#5E5D5D",
+                              fontFamily: isDark ? "OutFit" : "OutFitBold",
+                              backgroundColor: isDark ? "#323232" : "#5E5D5D",
                               borderWidth: 2,
+                              borderColor: isDark ? "#5e5e5a" : "#6FCCDD",
                               color: isDark ? "#fff" : "#6FCCDD",
                               alignSelf: "center",
                               borderRadius: 10,
@@ -1355,9 +1360,10 @@ export default function HomeScreen() {
                             styles.headerTitle,
                             {
                               fontSize: isMobile ? 14 : 16,
-                              borderColor: isDark ? "#fff" : "#000",
+                              fontFamily: isDark ? "OutFit" : "OutFitBold",
+                              backgroundColor: isDark ? "#323232" : "#000",
                               borderWidth: 2,
-                              backgroundColor: "#000",
+                              borderColor: isDark ? "#5e5e5a" : "#000",
                               color: "#fff",
                               alignSelf: "center",
                               borderRadius: 10,
@@ -1408,9 +1414,9 @@ export default function HomeScreen() {
                           {
                             flexDirection: "row",
                             gap: 10,
-                            backgroundColor: isDark ? "#5e5e5a" : "#000080",
+                            backgroundColor: isDark ? "#323232" : "#000080",
                             borderWidth: isDark ? 1 : 0,
-                            borderColor: "#5e5e5a",
+                            borderColor: isDark ? "#5e5e5a" : "#e2e0d8",
                           },
                         ]}
                         onPress={() => selectLanguage(language)}
@@ -1454,9 +1460,9 @@ export default function HomeScreen() {
                             alignItems: "center",
                             gap: 10,
                             width: isMobile ? "80%" : "90%",
-                            backgroundColor: isDark ? "#5e5e5a" : "#000080",
+                            backgroundColor: isDark ? "#323232" : "#000080",
                             borderWidth: isDark ? 1 : 0,
-                            borderColor: "#5e5e5a",
+                            borderColor: isDark ? "#5e5e5a" : "#e2e0d8",
                           },
                         ]}
                         onPress={() => selectTopMenu(topMenu)}
@@ -1509,9 +1515,9 @@ export default function HomeScreen() {
                             alignItems: "center",
                             gap: 10,
                             width: isMobile ? "80%" : "90%",
-                            backgroundColor: isDark ? "#5e5e5a" : "#000080",
+                            backgroundColor: isDark ? "#323232" : "#000080",
                             borderWidth: isDark ? 1 : 0,
-                            borderColor: "#5e5e5a",
+                            borderColor: isDark ? "#5e5e5a" : "#e2e0d8",
                           },
                         ]}
                         onPress={() => selectMainMenu(mainMenu)}
@@ -1563,9 +1569,9 @@ export default function HomeScreen() {
                             alignItems: "center",
                             gap: 10,
                             width: isMobile ? "80%" : "90%",
-                            backgroundColor: isDark ? "#5e5e5a" : "#000080",
+                            backgroundColor: isDark ? "#323232" : "#000080",
                             borderWidth: isDark ? 1 : 0,
-                            borderColor: "#5e5e5a",
+                            borderColor: isDark ? "#5e5e5a" : "#e2e0d8",
                           },
                         ]}
                         onPress={() => selectSubMenu(subMenu)}
@@ -1617,9 +1623,9 @@ export default function HomeScreen() {
                             alignItems: "center",
                             gap: 10,
                             width: isMobile ? "80%" : "90%",
-                            backgroundColor: isDark ? "#5e5e5a" : "#000080",
+                            backgroundColor: isDark ? "#323232" : "#000080",
                             borderWidth: isDark ? 1 : 0,
-                            borderColor: "#5e5e5a",
+                            borderColor: isDark ? "#5e5e5a" : "#e2e0d8",
                           },
                         ]}
                         onPress={() => selectLivestockMenu(livestockMenu)}
@@ -1671,9 +1677,9 @@ export default function HomeScreen() {
                             alignItems: "center",
                             gap: 10,
                             width: isMobile ? "80%" : "90%",
-                            backgroundColor: isDark ? "#5e5e5a" : "#000080",
+                            backgroundColor: isDark ? "#323232" : "#000080",
                             borderWidth: isDark ? 1 : 0,
-                            borderColor: "#5e5e5a",
+                            borderColor: isDark ? "#5e5e5a" : "#e2e0d8",
                           },
                         ]}
                         onPress={() => selectLivestockSubMenu(livestockSubMenu)}
@@ -1725,9 +1731,9 @@ export default function HomeScreen() {
                             gap: 10,
                             justifyContent: "center",
                             width: "40%",
-                            backgroundColor: isDark ? "#5e5e5a" : "#000080",
+                            backgroundColor: isDark ? "#323232" : "#000080",
                             borderWidth: isDark ? 1 : 0,
-                            borderColor: "#5e5e5a",
+                            borderColor: isDark ? "#5e5e5a" : "#e2e0d8",
                           },
                         ]}
                         onPress={() => selectCropMenu(cropMenu, "Full Crop")}
@@ -1779,9 +1785,9 @@ export default function HomeScreen() {
                             gap: 10,
                             justifyContent: "center",
                             width: "40%",
-                            backgroundColor: isDark ? "#5e5e5a" : "#000080",
+                            backgroundColor: isDark ? "#323232" : "#000080",
                             borderWidth: isDark ? 1 : 0,
-                            borderColor: "#5e5e5a",
+                            borderColor: isDark ? "#5e5e5a" : "#e2e0d8",
                           },
                         ]}
                         onPress={() => selectCropMenu(cropMenu, "8 Crop")}
@@ -1833,9 +1839,9 @@ export default function HomeScreen() {
                             gap: 10,
                             justifyContent: "center",
                             width: "40%",
-                            backgroundColor: isDark ? "#5e5e5a" : "#000080",
+                            backgroundColor: isDark ? "#323232" : "#000080",
                             borderWidth: isDark ? 1 : 0,
-                            borderColor: "#5e5e5a",
+                            borderColor: isDark ? "#5e5e5a" : "#e2e0d8",
                           },
                         ]}
                         onPress={() =>
@@ -1886,9 +1892,9 @@ export default function HomeScreen() {
                             gap: 10,
                             justifyContent: "center",
                             width: "40%",
-                            backgroundColor: isDark ? "#5e5e5a" : "#000080",
+                            backgroundColor: isDark ? "#323232" : "#000080",
                             borderWidth: isDark ? 1 : 0,
-                            borderColor: "#5e5e5a",
+                            borderColor: isDark ? "#5e5e5a" : "#e2e0d8",
                           },
                         ]}
                         onPress={() =>
@@ -1934,9 +1940,9 @@ export default function HomeScreen() {
                             gap: 10,
                             justifyContent: "center",
                             width: "40%",
-                            backgroundColor: isDark ? "#5e5e5a" : "#000080",
+                            backgroundColor: isDark ? "#323232" : "#000080",
                             borderWidth: isDark ? 1 : 0,
-                            borderColor: "#5e5e5a",
+                            borderColor: isDark ? "#5e5e5a" : "#e2e0d8",
                           },
                         ]}
                         onPress={() =>
@@ -1983,9 +1989,9 @@ export default function HomeScreen() {
                               gap: 10,
                               justifyContent: "center",
                               width: "40%",
-                              backgroundColor: isDark ? "#5e5e5a" : "#000080",
+                              backgroundColor: isDark ? "#323232" : "#000080",
                               borderWidth: isDark ? 1 : 0,
-                              borderColor: "#5e5e5a",
+                              borderColor: isDark ? "#5e5e5a" : "#e2e0d8",
                             },
                           ]}
                           onPress={() => selectAltitudeMenu(altitudeMenu)}
@@ -2030,9 +2036,9 @@ export default function HomeScreen() {
                               flexDirection: "row",
                               gap: 10,
                               alignItems: "center",
-                              backgroundColor: isDark ? "#5e5e5a" : "#000080",
+                              backgroundColor: isDark ? "#323232" : "#000080",
                               borderWidth: isDark ? 1 : 0,
-                              borderColor: "#5e5e5a",
+                              borderColor: isDark ? "#5e5e5a" : "#e2e0d8",
                             },
                           ]}
                           onPress={() => selectSoilTypeMenu(soilTypeMenu)}
@@ -2079,7 +2085,11 @@ export default function HomeScreen() {
                   <Animated.View
                     style={[
                       styles.subTitleContainer,
-                      { backgroundColor: isDark ? "#5e5e5a" : "#DB806E" },
+                      {
+                        backgroundColor: isDark ? "#323232" : "#DB806E",
+                        borderWidth: isDark ? 1 : 0,
+                        borderColor: isDark ? "#5e5e5a" : "#e2e0d8",
+                      },
                     ]}
                   >
                     {languageCode == 1 ? (

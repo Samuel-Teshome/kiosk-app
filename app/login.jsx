@@ -101,7 +101,7 @@ const Login = () => {
         style={[
           styles.servicesCard,
           {
-            backgroundColor: isDark ? "" : "#F9F9F9",
+            backgroundColor: isDark ? "#323232" : "#F9F9F9",
             ShadowColor: isDark ? "white" : "black",
             boxShadow: isDark
               ? "0 4px 8px rgba(255, 255, 255, 0.5)"

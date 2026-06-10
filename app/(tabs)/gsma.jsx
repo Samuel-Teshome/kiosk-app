@@ -89,11 +89,11 @@ export default function Gsma() {
             style={[
               styles.servicesCard,
               {
-                backgroundColor: isDark ? "" : "#F9F9F9",
                 ShadowColor: isDark ? "white" : "black",
                 boxShadow: isDark
                   ? "0 4px 8px rgba(255, 255, 255, 0.5)"
                   : "0 4px 8px rgba(0, 0, 0, 0.5)",
+                backgroundColor: isDark ? "#323232" : "#F9F9F9",
                 borderWidth: isDark ? 1 : 0,
                 borderColor: isDark ? "#5e5e5a" : "#e2e0d8",
               },
@@ -112,7 +112,10 @@ export default function Gsma() {
               <Text
                 style={[
                   styles.serviceName,
-                  { color: isDark ? "#5e5e5a" : "#91AC34" },
+                  {
+                    color: isDark ? "white" : "#91AC34",
+                    opacity: isDark ? "0.6" : "1",
+                  },
                 ]}
                 numberOfLines={1}
               >
@@ -153,7 +156,7 @@ export default function Gsma() {
                   borderRadius: 10,
                   paddingHorizontal: 5,
                   paddingVertical: 5,
-                  backgroundColor: isDark ? "black" : "#6FCCDD",
+                  backgroundColor: isDark ? "#323232" : "#6FCCDD",
                   borderWidth: 1,
                   borderColor: isDark ? "#5e5e5a" : "#6FCCDD",
                 }}
@@ -183,7 +186,7 @@ export default function Gsma() {
                   borderRadius: 10,
                   paddingHorizontal: 5,
                   paddingVertical: 5,
-                  backgroundColor: isDark ? "black" : "#6FCCDD",
+                  backgroundColor: isDark ? "#323232" : "#6FCCDD",
                   borderWidth: 1,
                   borderColor: isDark ? "#5e5e5a" : "#6FCCDD",
                 }}

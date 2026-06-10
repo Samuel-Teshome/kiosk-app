@@ -62,7 +62,11 @@ export default function AudioPlayer({ source }) {
       <View
         style={[
           styles.timeRow,
-          { backgroundColor: isDark ? "#5e5e5a" : "rgba(111, 204, 221, 0.6)" },
+          {
+            backgroundColor: isDark ? "#323232" : "rgba(111, 204, 221, 0.6)",
+            borderWidth: isDark ? 1 : 0,
+            borderColor: isDark ? "#5e5e5a" : "#e2e0d8",
+          },
         ]}
       >
         <Text
