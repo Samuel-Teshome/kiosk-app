@@ -43,7 +43,7 @@ export default function CustomDropdown2({
   }, [items, labelKey, valueKey]);
 
   const colorScheme = useColorScheme();
-  const isDark = colorScheme.colorScheme === "dark";
+  const isDark = colorScheme === "dark";
 
   return (
     <View

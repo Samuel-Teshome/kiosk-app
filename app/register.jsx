@@ -21,7 +21,7 @@ const Register = () => {
   const colorScheme = useColorScheme();
   const { width, height } = useWindowDimensions();
   const isMobile = width < 480;
-  const isDark = colorScheme.colorScheme === "dark";
+  const isDark = colorScheme === "dark";
   const [form, setForm] = useState({
     fullName: "",
     userName: "",
@@ -32,7 +32,7 @@ const Register = () => {
   const hostname = window.location.hostname;
   const port = 3000;
   const BASE_URL = `http://${hostname}:${port}`;
-  console.log("API URL: ", BASE_URL);
+  // console.log("API URL: ", BASE_URL);
 
   const [secure, setSecure] = useState(true);
 
@@ -112,7 +112,21 @@ const Register = () => {
         }}
       />
       <HeaderBar2 />
-      <View style={[styles.servicesCard, { width: isMobile ? "90%" : "50%" }]}>
+      <View
+        style={[
+          styles.servicesCard,
+          {
+            width: isMobile ? "90%" : "50%",
+            backgroundColor: isDark ? "#323232" : "#F9F9F9",
+            ShadowColor: isDark ? "white" : "black",
+            boxShadow: isDark
+              ? "0 4px 8px rgba(255, 255, 255, 0.5)"
+              : "0 4px 8px rgba(0, 0, 0, 0.5)",
+            borderWidth: isDark ? 1 : 0,
+            borderColor: isDark ? "#5e5e5a" : "#e2e0d8",
+          },
+        ]}
+      >
         <View style={{ alignItems: "center" }}>
           <ThemedText type="title">Registration</ThemedText>
         </View>
@@ -285,7 +299,12 @@ const Register = () => {
               <View
                 style={[
                   styles.btn,
-                  { opacity: colorScheme === "dark" ? 0.8 : 1 },
+                  {
+                    opacity: isDark ? 0.8 : 1,
+                    backgroundColor: isDark ? "#333333" : "#138f49",
+                    borderWidth: 1,
+                    borderColor: isDark ? "#5e5e5a" : "#e2e0d8",
+                  },
                 ]}
               >
                 <Text style={styles.btnText}>Submit</Text>
@@ -301,14 +320,20 @@ const Register = () => {
                 style={[
                   styles.btn,
                   {
-                    backgroundColor:
-                      colorScheme === "dark"
-                        ? "#A1A1A3"
-                        : "rgba(97, 85, 66, 0.74)",
+                    backgroundColor: isDark ? "" : "#615542",
+                    borderColor: isDark ? "#5e5e5a" : "#e2e0d8",
+                    borderWidth: 1,
                   },
                 ]}
               >
-                <Text style={styles.btnText}>Cancel</Text>
+                <Text
+                  style={[
+                    styles.btnText,
+                    { fontFamily: isDark ? "OutFit" : "OutFitBold" },
+                  ]}
+                >
+                  Cancel
+                </Text>
               </View>
             </TouchableOpacity>
           </View>

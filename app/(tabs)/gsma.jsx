@@ -19,12 +19,13 @@ import { WebView } from "react-native-webview";
 import HeaderBar from "../../components/HeaderBar";
 export default function Gsma() {
   const colorScheme = useColorScheme();
+  const isDark = colorScheme === "dark";
 
   // const BASE_URL = process.env.EXPO_PUBLIC_BASE_URL;
   const hostname = window.location.hostname;
   const port = 3000;
   const BASE_URL = `http://${hostname}:${port}`;
-  console.log("API URL: ", BASE_URL);
+  // console.log("API URL: ", BASE_URL);
 
   const [contents, setContents] = useState([]);
   const [amharicTitle, setAmharicTitle] = useState("");
@@ -84,16 +85,38 @@ export default function Gsma() {
         keyExtractor={(item) => item.id}
         contentContainerStyle={styles.servicesCardContainer}
         renderItem={({ item: content }) => (
-          <View style={styles.servicesCard}>
+          <View
+            style={[
+              styles.servicesCard,
+              {
+                ShadowColor: isDark ? "white" : "black",
+                boxShadow: isDark
+                  ? "0 4px 8px rgba(255, 255, 255, 0.5)"
+                  : "0 4px 8px rgba(0, 0, 0, 0.5)",
+                backgroundColor: isDark ? "#323232" : "#F9F9F9",
+                borderWidth: isDark ? 1 : 0,
+                borderColor: isDark ? "#5e5e5a" : "#e2e0d8",
+              },
+            ]}
+          >
             <View style={{ gap: 10 }}>
               <Text
-                style={[styles.serviceName, { color: "#009147" }]}
+                style={[
+                  styles.serviceName,
+                  { color: isDark ? "#fff" : "#009147" },
+                ]}
                 numberOfLines={1}
               >
                 {content.titleAmharic}
               </Text>
               <Text
-                style={[styles.serviceName, { color: "#91AC34" }]}
+                style={[
+                  styles.serviceName,
+                  {
+                    color: isDark ? "white" : "#91AC34",
+                    opacity: isDark ? "0.6" : "1",
+                  },
+                ]}
                 numberOfLines={1}
               >
                 {content.titleEnglish}
@@ -105,7 +128,6 @@ export default function Gsma() {
                 setAmharicTitle(content.titleAmharic);
                 setEnglishTitle(content.titleEnglish);
                 setPdfUrl(`${BASE_URL}/${content.filePath}`);
-                console.log(`${BASE_URL}/${content.filePath}`);
               }}
             >
               <Image
@@ -134,21 +156,22 @@ export default function Gsma() {
                   borderRadius: 10,
                   paddingHorizontal: 5,
                   paddingVertical: 5,
-                  backgroundColor: colorScheme === "dark" ? "black" : "#6FCCDD",
-                  borderColor: colorScheme === "dark" ? "black" : "#6FCCDD",
+                  backgroundColor: isDark ? "#323232" : "#6FCCDD",
+                  borderWidth: 1,
+                  borderColor: isDark ? "#5e5e5a" : "#6FCCDD",
                 }}
               >
                 <FontAwesome
                   name="language"
                   size={11}
-                  color="#625641"
+                  color={isDark ? "#fff" : "#625641"}
                   style={{ paddingTop: 1 }}
                 />
                 <Text
                   style={{
                     fontSize: 10,
                     fontFamily: "OutFit",
-                    color: "#625641",
+                    color: isDark ? "#fff" : "#625641",
                   }}
                 >
                   {content.language}
@@ -163,18 +186,23 @@ export default function Gsma() {
                   borderRadius: 10,
                   paddingHorizontal: 5,
                   paddingVertical: 5,
-                  backgroundColor: colorScheme === "dark" ? "black" : "#6FCCDD",
-                  borderColor: colorScheme === "dark" ? "black" : "#6FCCDD",
+                  backgroundColor: isDark ? "#323232" : "#6FCCDD",
+                  borderWidth: 1,
+                  borderColor: isDark ? "#5e5e5a" : "#6FCCDD",
                 }}
               >
                 {content.type === "PDF" ? (
                   <MaterialIcons
                     name="picture-as-pdf"
                     size={16}
-                    color="#625641"
+                    color={isDark ? "#fff" : "#625641"}
                   />
                 ) : (
-                  <MaterialIcons name="audiotrack" size={16} color="#625641" />
+                  <MaterialIcons
+                    name="audiotrack"
+                    size={16}
+                    color={isDark ? "#fff" : "#625641"}
+                  />
                 )}
               </View>
             </View>
@@ -187,10 +215,7 @@ export default function Gsma() {
         }
         ListEmptyComponent={
           <Text
-            style={[
-              styles.headerText,
-              { color: colorScheme === "dark" ? "white" : "#102714" },
-            ]}
+            style={[styles.headerText, { color: isDark ? "white" : "#102714" }]}
           >
             No content available.
           </Text>
@@ -243,7 +268,7 @@ const styles = StyleSheet.create({
     height: 300,
     // height: "100%",
     width: 300,
-    backgroundColor: "#F9F9F9",
+    // backgroundColor: "#F9F9F9",
     // marginHorizontal: 20,
     // padding: 15,
     paddingVertical: 10,
@@ -254,7 +279,7 @@ const styles = StyleSheet.create({
     ShadowRadius: 10,
     ShadowOpacity: 0.1,
     elevation: 5,
-    boxShadow: "0 4px 8px rgba(0, 0, 0, 0.5)",
+    // boxShadow: "0 4px 8px rgba(0, 0, 0, 0.5)",
     marginBottom: 20,
     gap: 10,
     // borderWidth: 1,

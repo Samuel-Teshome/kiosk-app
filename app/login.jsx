@@ -1,4 +1,3 @@
-import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
 import { useColorScheme } from "@/hooks/useColorScheme";
 import { Feather } from "@expo/vector-icons";
@@ -17,7 +16,7 @@ import {
 
 const Login = () => {
   const colorScheme = useColorScheme();
-  const isDark = colorScheme.colorScheme === "dark";
+  const isDark = colorScheme === "dark";
   const [form, setForm] = useState({
     userName: "",
     password: "",
@@ -27,7 +26,7 @@ const Login = () => {
   const hostname = window.location.hostname;
   const port = 3000;
   const BASE_URL = `http://${hostname}:${port}`;
-  console.log("API URL: ", BASE_URL);
+  // console.log("API URL: ", BASE_URL);
 
   const [secure, setSecure] = useState(true);
 
@@ -98,9 +97,31 @@ const Login = () => {
           },
         }}
       />
-      <View style={styles.servicesCard}>
+      <View
+        style={[
+          styles.servicesCard,
+          {
+            backgroundColor: isDark ? "#323232" : "#F9F9F9",
+            ShadowColor: isDark ? "white" : "black",
+            boxShadow: isDark
+              ? "0 4px 8px rgba(255, 255, 255, 0.5)"
+              : "0 4px 8px rgba(0, 0, 0, 0.5)",
+            borderWidth: isDark ? 1 : 0,
+            borderColor: isDark ? "#5e5e5a" : "#e2e0d8",
+          },
+        ]}
+      >
         <View style={{ alignItems: "center" }}>
-          <ThemedText type="title">Login</ThemedText>
+          <Text
+            style={{
+              color: isDark ? "white" : "#615542",
+              fontSize: 32,
+              fontWeight: "bold",
+              lineHeight: 32,
+            }}
+          >
+            Login
+          </Text>
         </View>
         <View
           style={[
@@ -117,7 +138,7 @@ const Login = () => {
                 style={{
                   marginBottom: 10,
                   fontFamily: "OutFit",
-                  color: isDark ? "#fff" : "#615542",
+                  color: isDark ? "white" : "#615542",
                 }}
               >
                 Username
@@ -125,7 +146,7 @@ const Login = () => {
               <Text
                 style={{
                   fontFamily: "OutFit",
-                  color: isDark ? "#fcf7f8" : "#82051e",
+                  color: isDark ? "white" : "#82051e",
                 }}
               >
                 {" "}
@@ -162,7 +183,7 @@ const Login = () => {
                 style={{
                   marginBottom: 10,
                   fontFamily: "OutFit",
-                  color: isDark ? "#fff" : "#615542",
+                  color: isDark ? "white" : "#615542",
                 }}
               >
                 Password
@@ -170,7 +191,7 @@ const Login = () => {
               <Text
                 style={{
                   fontFamily: "OutFit",
-                  color: isDark ? "#fcf7f8" : "#82051e",
+                  color: isDark ? "white" : "#82051e",
                 }}
               >
                 {" "}
@@ -206,7 +227,7 @@ const Login = () => {
                 <Feather
                   name={secure ? "eye-off" : "eye"}
                   size={16}
-                  color={secure ? "gray" : isDark ? "gray" : "#615542"}
+                  color={secure ? "gray" : isDark ? "white" : "#615542"}
                 />
               </TouchableOpacity>
             </View>
@@ -226,7 +247,12 @@ const Login = () => {
               <View
                 style={[
                   styles.btn,
-                  { opacity: colorScheme === "dark" ? 0.8 : 1 },
+                  {
+                    opacity: isDark ? 0.8 : 1,
+                    backgroundColor: isDark ? "#333333" : "#138f49",
+                    borderWidth: 1,
+                    borderColor: isDark ? "#5e5e5a" : "#e2e0d8",
+                  },
                 ]}
               >
                 <Text style={styles.btnText}>Submit</Text>
@@ -242,14 +268,20 @@ const Login = () => {
                 style={[
                   styles.btn,
                   {
-                    backgroundColor:
-                      colorScheme === "dark"
-                        ? "#A1A1A3"
-                        : "rgba(97, 85, 66, 0.74)",
+                    backgroundColor: isDark ? "" : "#615542",
+                    borderColor: isDark ? "#5e5e5a" : "#e2e0d8",
+                    borderWidth: 1,
                   },
                 ]}
               >
-                <Text style={styles.btnText}>Cancel</Text>
+                <Text
+                  style={[
+                    styles.btnText,
+                    { fontFamily: isDark ? "OutFit" : "OutFitBold" },
+                  ]}
+                >
+                  Cancel
+                </Text>
               </View>
             </TouchableOpacity>
           </View>
@@ -274,16 +306,16 @@ const styles = StyleSheet.create({
   servicesCard: {
     height: 300,
     width: 300,
-    backgroundColor: "#F9F9F9",
+    // backgroundColor: "#F9F9F9",
     marginHorizontal: 20,
     padding: 15,
     borderRadius: 15,
-    ShadowColor: "black",
+    // ShadowColor: "black",
     ShadowOffset: { width: 0, height: 30 },
     ShadowRadius: 10,
     ShadowOpacity: 0.1,
     elevation: 5,
-    boxShadow: "0 4px 8px rgba(0, 0, 0, 0.5)",
+    // boxShadow: "0 4px 8px rgba(0, 0, 0, 0.5)",
     marginBottom: 30,
     alignSelf: "center",
     gap: 20,
@@ -296,7 +328,8 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     paddingVertical: 10,
     paddingHorizontal: 15,
-    backgroundColor: "rgba(19, 143, 73, 0.74)",
+    // backgroundColor: "rgba(19, 143, 73, 0.74)",
+    // border-[#e2e0d8] dark:border-[#5e5e5a] bg-[#138f49] dark:bg-[#333333]
   },
   btnText: {
     fontSize: 18,
