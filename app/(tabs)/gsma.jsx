@@ -82,7 +82,7 @@ export default function Gsma() {
       <HeaderBar />
       <FlatList
         data={contents}
-        keyExtractor={(item) => item.id}
+        keyExtractor={(item, index) => `${item.id}-${index}`}
         contentContainerStyle={styles.servicesCardContainer}
         renderItem={({ item: content }) => (
           <View
