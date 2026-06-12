@@ -91,7 +91,7 @@ export default function HomeScreen() {
   const [_8028SoilTypeMenus, set_8028SoilTypeMenus] = useState([]);
   const [_8028LivestockMenus, set_8028LivestockMenus] = useState([]);
   const [_8028LivestockSubMenus, set_8028LivestockSubMenus] = useState([]);
-  const [_8028AudioContent, set_8028AudioContent] = useState();
+  const [_8028AudioContent, set_8028AudioContent] = useState("");
   const [_8028ContentPlayedLog, set_8028ContentPlayedLog] = useState("");
   const [showLanguageOptions, setShowLanguageOptions] = useState(false);
   const [showTopMenu, setShowTopMenu] = useState(false);
@@ -107,11 +107,15 @@ export default function HomeScreen() {
   const [showLivestockMenu, setShowLivestockMenu] = useState(false);
   const [showLivestockSubMenu, setShowLivestockSubMenu] = useState(false);
   const [showAudioPlayer, setShowAudioPlayer] = useState(false);
+  const [showNoAudioContent, setShowNoAudioContent] = useState(false);
   const [selectedLanguageCode, setSelectedLanguageCode] = useState();
   const [selectedLanguageName, setSelectedLanguageName] = useState();
   const [languageLabel, setLanguageLabel] = useState();
   const [defaultTopLabel, setDefaultTopLabel] = useState();
   const [topMenuLabel, setTopMenuLabel] = useState();
+  const [clickHere1, setClickHere1Label] = useState("");
+  const [clickHere2, setClickHere2Label] = useState("");
+  const [noAudioContent, setNoAudioContentLabel] = useState("");
   const [showTopMenuLabel, setShowTopMenuLabel] = useState(false);
   const [mainMenuLabel, setMainMenuLabel] = useState();
   const [showMainMenuLabel, setShowMainMenuLabel] = useState(false);
@@ -260,6 +264,9 @@ export default function HomeScreen() {
     setShowHHICropMenuST(false);
     setDefaultTopLabel(language.topMenuTranslation);
     setTopMenuLabel(language.topMenuTranslation);
+    setClickHere1Label(language.clickHere1);
+    setClickHere2Label(language.clickHere2);
+    setNoAudioContentLabel(language.noAudioContent);
     get8028TopMenu(language.code);
   };
 
@@ -387,7 +394,6 @@ export default function HomeScreen() {
       setShowLivestockMenu(true);
       get8028LivestockMenu(subMenu.id, 1);
     } else {
-      setShowAudioPlayer(true);
       get8028Content(subMenu, "SubMenu");
       setBackingCropList("SubMenu");
     }
@@ -409,7 +415,6 @@ export default function HomeScreen() {
     } else {
       get8028Content(livestockMenu, "LivestockMenu");
       setShowLivestockMenu(false);
-      setShowAudioPlayer(true);
       setBackingCropList("LivestockMenu");
     }
   };
@@ -425,7 +430,6 @@ export default function HomeScreen() {
     setLivestockSubMenuCode(livestockSubMenu.code);
     setShowLivestockSubMenuLabel(true);
     get8028Content(livestockSubMenu, "LivestockSubMenu");
-    setShowAudioPlayer(true);
     setBackingCropList("LivestockSubMenu");
   };
 
@@ -446,8 +450,6 @@ export default function HomeScreen() {
 
   const selectCropMenu = (selectedCrop, backCropList) => {
     setBackingCropList(backCropList);
-    // setCropCode(selectedCrop.code);
-    setShowAudioPlayer(true);
     setCropMenuLabel(selectedCrop.displayName);
     if (backCropList == "Full HHI ST Crop") {
       setShowSoilTypeCropMenuLabel(true);
@@ -523,11 +525,23 @@ export default function HomeScreen() {
         `${BASE_URL}/api/8028_audio_contents/${language8028Code}/${topMainMenuCode}/${mainMenuCode}/${subMenu_code}/${livestockCode}/${altitudeCode}/${soilTypeCode}/${crop8028Code}`,
       )
         .then((res) => res.json())
-        .then((json) => {
+        .then(async (json) => {
           setLoadingMenu(false);
           if (json.length > 0) {
-            set_8028AudioContent(`${BASE_URL}/${json[0].contentFile}`);
+            var audioUrl = `${BASE_URL}/uploads/audios/hotline_8028/${json[0].contentFile}`;
+            set_8028AudioContent(audioUrl);
             set_8028ContentPlayedLog(json[0].contentPlayedLog);
+            const response = await fetch(audioUrl);
+            if (response.ok) {
+              setShowAudioPlayer(true);
+              setShowNoAudioContent(false);
+            } else {
+              setShowAudioPlayer(false);
+              setShowNoAudioContent(true);
+            }
+          } else {
+            setShowAudioPlayer(false);
+            setShowNoAudioContent(true);
           }
         })
         .catch((error) => {
@@ -713,6 +727,7 @@ export default function HomeScreen() {
   };
 
   const getBackToPrevious = (currentMenu) => {
+    set_8028AudioContent("");
     switch (currentMenu) {
       case "TopMenu":
         setShowTopMenu(false);
@@ -816,6 +831,7 @@ export default function HomeScreen() {
         setLivestockMenuLabel("");
         set_8028LivestockMenus([]);
         setShowAudioPlayer(false);
+        setShowNoAudioContent(false);
         break;
 
       case "LivestockSubMenu":
@@ -826,6 +842,7 @@ export default function HomeScreen() {
         setLivestockSubMenuLabel("");
         set_8028LivestockSubMenus([]);
         setShowAudioPlayer(false);
+        setShowNoAudioContent(false);
         break;
 
       case "AltitudeMenu":
@@ -863,7 +880,7 @@ export default function HomeScreen() {
 
       case "AudioPlayer":
         setShowAudioPlayer(false);
-
+        setShowNoAudioContent(false);
         if (backingCropList == "SubMenu") {
           setShowSubMenu(true);
           setShowSubMenuLabel(false);
@@ -903,9 +920,9 @@ export default function HomeScreen() {
     <ThemedView style={{ flex: 1 }}>
       <HeaderBar />
       <ScrollView contentContainerStyle={styles.servicesCardContainer}>
-        {services.map((service) => (
+        {services.map((service, index) => (
           <View
-            key={service.id}
+            key={`${service.id}-${index}`}
             style={[
               styles.servicesCard,
               {
@@ -963,6 +980,7 @@ export default function HomeScreen() {
                     setShowAltitudeMenu(false);
                     setShowSoilTypeMenu(false);
                     setShowAudioPlayer(false);
+                    setShowNoAudioContent(false);
                     setDialerVisible(true);
                     get8028Langages();
                   }}
@@ -1141,7 +1159,9 @@ export default function HomeScreen() {
                                                   ? "LivestockMenu"
                                                   : showLivestockSubMenu
                                                     ? "LivestockSubMenu"
-                                                    : "",
+                                                    : showNoAudioContent
+                                                      ? "AudioPlayer"
+                                                      : "",
                         )
                       }
                     >
@@ -2092,38 +2112,39 @@ export default function HomeScreen() {
                       },
                     ]}
                   >
-                    {languageCode == 1 ? (
-                      <Text style={styles.subTitle}>
-                        የኤክስቴንሽን ምክርን ለማዳመጥ ይህንን{" "}
-                        <Animated.View style={{ opacity }}>
-                          <Ionicons
-                            name="play-circle"
-                            size={20}
-                            color="#fff"
-                            style={{ textAlignVertical: "center" }}
-                          />
-                        </Animated.View>{" "}
-                        ይጫኑ።
-                      </Text>
-                    ) : (
-                      <Text style={styles.subTitle}>
-                        Press{" "}
-                        <Animated.View style={{ opacity }}>
-                          <Ionicons
-                            name="play-circle"
-                            size={20}
-                            color="#fff"
-                            style={{ textAlignVertical: "center" }}
-                          />
-                        </Animated.View>{" "}
-                        to listen the extension advisory.
-                      </Text>
-                    )}
+                    <Text style={styles.subTitle}>
+                      {clickHere1}{" "}
+                      <Animated.View style={{ opacity }}>
+                        <Ionicons
+                          name="play-circle"
+                          size={20}
+                          color="#fff"
+                          style={{ textAlignVertical: "center" }}
+                        />
+                      </Animated.View>{" "}
+                      {clickHere2}
+                    </Text>
                   </Animated.View>
 
                   <AudioPlayer source={_8028AudioContent} />
                 </View>
-                // <AudioPlayer source={audioSource} />
+              )}
+              {showNoAudioContent && (
+                <View>
+                  <Text
+                    style={[
+                      styles.headerText,
+                      {
+                        color: isDark ? "white" : "#102714",
+                        fontSize: isMobile ? 30 : 40,
+                        textAlign: "center",
+                        fontFamily: "OutFit",
+                      },
+                    ]}
+                  >
+                    {noAudioContent}!
+                  </Text>
+                </View>
               )}
             </ScrollView>
           </Pressable>
@@ -2172,7 +2193,6 @@ const styles = StyleSheet.create({
   },
   servicesCard: {
     gap: 10,
-    // backgroundColor: "#F9F9F9",
     marginHorizontal: 30,
     padding: 15,
     borderRadius: 15,
@@ -2181,7 +2201,6 @@ const styles = StyleSheet.create({
     ShadowRadius: 10,
     ShadowOpacity: 0.1,
     elevation: 5,
-    // boxShadow: "0 4px 8px rgba(0, 0, 0, 0.5)",
     marginBottom: 30,
   },
   serviceName: {
@@ -2205,8 +2224,6 @@ const styles = StyleSheet.create({
   modalContainer: {
     width: "50%",
     height: "100%",
-    // backgroundColor: "#f0efe7",
-    // backgroundColor: "#fff",
     borderRadius: 12,
     overflow: "hidden",
   },
@@ -2251,7 +2268,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 10,
     borderRadius: 8,
-    // backgroundColor: "#615542",
     backgroundColor: "#000080",
   },
 
@@ -2263,11 +2279,8 @@ const styles = StyleSheet.create({
   submitBtn: {
     paddingHorizontal: 16,
     paddingVertical: 10,
-    // marginBottom: 10,
     borderRadius: 8,
     backgroundColor: "#fff",
-    // borderColor: "#C0C0C0",
-    // borderWidth: 1,
     alignItems: "center",
   },
 
@@ -2281,8 +2294,6 @@ const styles = StyleSheet.create({
   languagesCard: {
     gap: 10,
     backgroundColor: "#F9F9F9",
-    // marginHorizontal: 30,
-    // padding: 15,
     borderRadius: 15,
     ShadowColor: "black",
     ShadowOffset: { width: 0, height: 30 },
