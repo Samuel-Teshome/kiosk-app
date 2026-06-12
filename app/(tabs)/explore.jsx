@@ -393,7 +393,7 @@ export default function TabTwoScreen() {
       {/* </View> */}
       <FlatList
         data={contents}
-        keyExtractor={(item) => item.id}
+        keyExtractor={(item, index) => `${item.id}-${index}`}
         contentContainerStyle={styles.servicesCardContainer}
         renderItem={({ item: content }) => (
           <View
