@@ -491,6 +491,8 @@ export default function Index() {
             position: "absolute",
             right: isMobile ? 5 : 220,
             top: isMobile ? 10 : 16,
+            flexDirection: isMobile ? "column" : "row",
+            gap: isMobile ? 0 : 20,
           }}
         >
           <TouchableOpacity onPress={() => router.push("/register")}>
@@ -500,6 +502,15 @@ export default function Index() {
               color={isDark ? "white" : "black"}
             />
           </TouchableOpacity>
+          {!isMobile && (
+            <TouchableOpacity onPress={() => router.push("/downloader")}>
+              <FontAwesome
+                name="download"
+                size={24}
+                color={isDark ? "white" : "black"}
+              />
+            </TouchableOpacity>
+          )}
         </View>
       </View>
     </ThemedView>
