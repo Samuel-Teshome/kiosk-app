@@ -1,0 +1,56 @@
+{
+  "header": {
+    "title": "Digital Kiosk",
+    "language": {
+      "select": "Select Language",
+      "en": {
+        "title": "English",
+        "code": "en"
+      },
+      "am": { "title": "Amharic", "code": "am" },
+      "om": { "title": "Afan Oromo", "code": "om" },
+      "ti": { "title": "Tigriyna", "code": "ti" }
+    },
+    "toolTip": {
+      "register": "Register User",
+      "administration": "Data Administration"
+    }
+  },
+  "navigation": {
+    "services": {
+      "title": "Services"
+    },
+    "advisory": {
+      "title": "Advisory"
+    },
+    "digitalLiteracy": {
+      "title": "Digital Literacy"
+    }
+  },
+  "home": {
+    "nocontent": "No content available."
+  },
+  "advisory": {
+    "filter": {
+      "category": "Select Category",
+      "subjectArea": "Select Subject Area",
+      "nofiltercontent": "No Content with Filter Criteria"
+    },
+    "modal": {
+      "language": "Language",
+      "category": "Category",
+      "subjectArea": "Subject Area"
+    }
+  },
+  "buttons": {
+    "search": "Search",
+    "submit": "Submit",
+    "cancel": "Cancel"
+  },
+  "login": {
+    "credential": {
+      "username": "Username",
+      "password": "Password"
+    }
+  }
+}

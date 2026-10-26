@@ -1,0 +1,56 @@
+{
+  "header": {
+    "title": "ዲጂታል ኪዮስክ",
+    "language": {
+      "select": "ቋንቋ ይምረጡ",
+      "en": {
+        "title": "እንግሊዝኛ",
+        "code": "እን"
+      },
+      "am": { "title": "አማርኛ", "code": "አማ" },
+      "om": { "title": "ኦሮምኛ", "code": "ኦሮ" },
+      "ti": { "title": "ትግርኛ", "code": "ትግ" }
+    },
+    "toolTip": {
+      "register": "ተጠቃሚ ይመዝግቡ",
+      "administration": "የመረጃ አስተዳደር"
+    }
+  },
+  "navigation": {
+    "services": {
+      "title": "አገልግሎቶች"
+    },
+    "advisory": {
+      "title": "ምክር"
+    },
+    "digitalLiteracy": {
+      "title": "ዲጂታል አጠቃቀም"
+    }
+  },
+  "home": {
+    "nocontent": "ምንም ይዘት የለም፡፡"
+  },
+  "advisory": {
+    "filter": {
+      "category": "ምድብ ይምረጡ",
+      "subjectArea": "ርዕሰ ጉዳይ ይምረጡ",
+      "nofiltercontent": "በማጣሪያ መስፈርቶቹ መሰረት ምንም ይዘት የለም"
+    },
+    "modal": {
+      "language": "ቋንቋ",
+      "category": "ምድብ",
+      "subjectArea": "ርዕሰ ጉዳይ"
+    }
+  },
+  "buttons": {
+    "search": "ፈልግ",
+    "submit": "Submit",
+    "cancel": "Cancel"
+  },
+  "login": {
+    "credential": {
+      "username": "Username",
+      "password": "Password"
+    }
+  }
+}

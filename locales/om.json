@@ -1,0 +1,56 @@
+{
+  "header": {
+    "title": "Kiyooskii Dijiitaalaa",
+    "language": {
+      "select": "Afaan Filadhu",
+      "en": {
+        "title": "Afaan Ingilizii",
+        "code": "ing"
+      },
+      "am": { "title": "Afaan Amaaraa", "code": "am" },
+      "om": { "title": "Afan Oromoo", "code": "om" },
+      "ti": { "title": "Afaan Tigiree", "code": "ti" }
+    },
+    "toolTip": {
+      "register": "Fayyadamaa Galmeessaa",
+      "administration": "Bulchiinsa Daataa"
+    }
+  },
+  "navigation": {
+    "services": {
+      "title": "Tajaajila"
+    },
+    "advisory": {
+      "title": "Gorsaa"
+    },
+    "digitalLiteracy": {
+      "title": "Fayyadama Dijitaalaa"
+    }
+  },
+  "home": {
+    "nocontent": "Qabiyyeen hin jiru."
+  },
+  "advisory": {
+    "filter": {
+      "category": "Gosa Filadhu",
+      "subjectArea": "Mata duree Filadhu",
+      "nofiltercontent": "Qabiyyee Ulaagaalee Caalbaasii Waliin Hin Qabu"
+    },
+    "modal": {
+      "language": "Afaan",
+      "category": "Ramaddii",
+      "subjectArea": "Mata duree"
+    }
+  },
+  "buttons": {
+    "search": "Barbaaduu",
+    "submit": "Submit",
+    "cancel": "Cancel"
+  },
+  "login": {
+    "credential": {
+      "username": "Username",
+      "password": "Password"
+    }
+  }
+}
