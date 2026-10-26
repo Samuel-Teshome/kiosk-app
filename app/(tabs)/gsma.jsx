@@ -4,6 +4,7 @@ import { AntDesign, FontAwesome, MaterialIcons } from "@expo/vector-icons";
 // import Constants from "expo-constants";
 import { Image } from "expo-image";
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import {
   ActivityIndicator,
   FlatList,
@@ -18,6 +19,7 @@ import {
 import { WebView } from "react-native-webview";
 import HeaderBar from "../../components/HeaderBar";
 export default function Gsma() {
+  const { t } = useTranslation();
   const colorScheme = useColorScheme();
   const isDark = colorScheme === "dark";
 
@@ -217,7 +219,7 @@ export default function Gsma() {
           <Text
             style={[styles.headerText, { color: isDark ? "white" : "#102714" }]}
           >
-            No content available.
+            {t("home.nocontent")}
           </Text>
         }
       />

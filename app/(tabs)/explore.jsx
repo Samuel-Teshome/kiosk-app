@@ -11,6 +11,7 @@ import { Image } from "expo-image";
 import { Video as ExpoVideo } from "expo-video";
 import { useEffect, useState } from "react";
 import toast, { Toaster } from "react-hot-toast";
+import { useTranslation } from "react-i18next";
 import {
   ActivityIndicator,
   FlatList,
@@ -29,6 +30,8 @@ import CustomDropdown2 from "../../components/CustomDropDown2";
 import HeaderBar from "../../components/HeaderBar";
 
 export default function TabTwoScreen() {
+  const { i18n, t } = useTranslation();
+  const languageValue = i18n.resolvedLanguage || i18n.language;
   const { width, height } = useWindowDimensions();
   const isMobile = width < 480;
   const colorScheme = useColorScheme();
@@ -42,7 +45,16 @@ export default function TabTwoScreen() {
 
   const [isPlayerVisible, setPlayerVisible] = useState(false);
   const [form, setForm] = useState({
-    language: "",
+    language:
+      languageValue == "om"
+        ? 1
+        : languageValue == "am"
+          ? 2
+          : languageValue == "en"
+            ? 3
+            : languageValue == "ti"
+              ? 5
+              : 2,
     category: "",
     subjectArea: "",
   });
@@ -117,7 +129,26 @@ export default function TabTwoScreen() {
   //       "&subjectAreaId=" +
   //       form.subjectArea
   useEffect(() => {
-    fetchConents();
+    let languageCode = 0;
+
+    switch (languageValue) {
+      case "en":
+        languageCode = 3;
+        break;
+      case "am":
+        languageCode = 2;
+        break;
+      case "om":
+        languageCode = 1;
+        break;
+      case "ti":
+        languageCode = 5;
+        break;
+    }
+    setForm({ ...form, ["language"]: languageCode });
+
+    // fetchConents();
+    filterData();
 
     fetch(`${BASE_URL}/api/languages`)
       .then((res) => res.json())
@@ -178,7 +209,7 @@ export default function TabTwoScreen() {
         console.error("API Error:", error);
         setLoading(false);
       });
-  }, []);
+  }, [languageValue]);
 
   const filterData = async () => {
     var url = `${BASE_URL}/api/contents/filter?languageId=${form.language}&categoryId=${form.category}&subjectAreaId=${form.subjectArea}`;
@@ -191,9 +222,9 @@ export default function TabTwoScreen() {
           setContents([]);
         } else {
           if (Platform.OS === "web") {
-            toast.error("No Content with Filter Criteria");
+            toast.error(t("advisory.filter.nofiltercontent"));
           } else {
-            Alert.alert("Error", "No Content with Filter Criteria");
+            Alert.alert("Error", t("advisory.filter.nofiltercontent"));
           }
         }
         for (const item of json) {
@@ -256,11 +287,11 @@ export default function TabTwoScreen() {
         <View style={{ flexDirection: "row", gap: 20 }}>
           <View>
             <CustomDropdown2
-              title="Language"
+              title={t("advisory.modal.language")}
               items={languages}
               value={form.language}
               setValue={handleDropdownChange("language")}
-              placeholder="Select Language"
+              placeholder={t("header.language.select")}
               zIndex={3000}
               zIndexInverse={1000}
               listMode="MODAL"
@@ -271,11 +302,11 @@ export default function TabTwoScreen() {
           </View>
           <View>
             <CustomDropdown2
-              title="Category"
+              title={t("advisory.modal.category")}
               items={categories}
               value={form.category}
               setValue={handleDropdownChange("category")}
-              placeholder="Select Category"
+              placeholder={t("advisory.filter.category")}
               zIndex={3000}
               zIndexInverse={1000}
               listMode="MODAL"
@@ -288,11 +319,11 @@ export default function TabTwoScreen() {
         <View style={{ flexDirection: "row", gap: 20 }}>
           <View>
             <CustomDropdown2
-              title="Subject Area"
+              title={t("advisory.modal.subjectArea")}
               items={subjectAreas}
               value={form.subjectArea}
               setValue={handleDropdownChange("subjectArea")}
-              placeholder="Select Subject Area"
+              placeholder={t("advisory.filter.subjectArea")}
               zIndex={3000}
               zIndexInverse={1000}
               listMode="MODAL"
@@ -313,7 +344,7 @@ export default function TabTwoScreen() {
                 },
               ]}
             >
-              <Text style={styles.btnText}>Filter</Text>
+              <Text style={styles.btnText}>{t("buttons.search")}</Text>
             </View>
           </TouchableOpacity>
         </View>
@@ -642,7 +673,7 @@ export default function TabTwoScreen() {
           <Text
             style={[styles.headerText, { color: isDark ? "white" : "#102714" }]}
           >
-            No content available.
+            {t("home.nocontent")}
           </Text>
         }
       />
