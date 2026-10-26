@@ -8,6 +8,7 @@ import { FontAwesome, MaterialCommunityIcons } from "@expo/vector-icons";
 // import Constants from "expo-constants";
 import { router } from "expo-router";
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import {
   ActivityIndicator,
   Image,
@@ -18,8 +19,10 @@ import {
   View,
 } from "react-native";
 import { ColorBar3 } from "./ColorBar";
+import LanguageSelector from "./LanguageSelector";
 
 const HeaderBar = () => {
+  const { t } = useTranslation();
   const { width, height } = useWindowDimensions();
   const isMobile = width < 480;
   const isTablet = width >= 480 && width < 1024;
@@ -107,7 +110,7 @@ const HeaderBar = () => {
               },
             ]}
           >
-            Digital Kiosk
+            {t("header.title")}
           </Text>
           <Image
             alt="App Logo"
@@ -138,7 +141,10 @@ const HeaderBar = () => {
             gap: 20,
           }}
         >
-          <TouchableOpacity onPress={() => router.replace("/login")}>
+          <TouchableOpacity
+            onPress={() => router.replace("/login")}
+            title={t("header.tooltip.administration")}
+          >
             <MaterialCommunityIcons
               name="database-cog-outline"
               size={24}
@@ -147,7 +153,10 @@ const HeaderBar = () => {
             />
           </TouchableOpacity>
           {!atLeastOneUser && (
-            <TouchableOpacity onPress={() => router.push("/register")}>
+            <TouchableOpacity
+              onPress={() => router.push("/register")}
+              title={t("header.tooltip.register")}
+            >
               <FontAwesome
                 name="user-plus"
                 size={24}
@@ -156,6 +165,8 @@ const HeaderBar = () => {
               />
             </TouchableOpacity>
           )}
+
+          <LanguageSelector />
         </View>
       </View>
       <ColorBar3 />
