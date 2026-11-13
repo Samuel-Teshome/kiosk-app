@@ -116,7 +116,8 @@ export default function TabTwoScreen() {
 
   const fetchMore = () => {
     if (!loading && page < totalPages) {
-      fetchConents(page + 1);
+      // fetchConents(page + 1);
+      filterData("FETCHMORE", page + 1);
     }
   };
   // "http://localhost:3000/api/languages"
@@ -148,7 +149,7 @@ export default function TabTwoScreen() {
     setForm({ ...form, ["language"]: languageCode });
 
     // fetchConents();
-    filterData();
+    filterData("Clicked");
 
     fetch(`${BASE_URL}/api/languages`)
       .then((res) => res.json())
@@ -211,7 +212,7 @@ export default function TabTwoScreen() {
       });
   }, [languageValue]);
 
-  const filterData = async () => {
+  const filterData2 = async () => {
     var url = `${BASE_URL}/api/contents/filter?languageId=${form.language}&categoryId=${form.category}&subjectAreaId=${form.subjectArea}`;
 
     fetch(url)
@@ -228,6 +229,47 @@ export default function TabTwoScreen() {
           }
         }
         for (const item of json) {
+          var videoUrl = `${BASE_URL}/` + item.videoPath;
+          var imageUrl = `${BASE_URL}/` + item.thumbNailPath;
+          const processed = {
+            ...item,
+            videoUrl: videoUrl,
+            imageUrl: imageUrl,
+          };
+
+          setContents((prev) => [...prev, processed]);
+        }
+      })
+      .catch((error) => {
+        console.error("API Error:", error);
+        setLoading(false);
+      });
+  };
+
+  const filterData = async (event, nextPage = 1) => {
+    if (event != "FETCHMORE") {
+      setContents([]);
+    }
+
+    if (nextPage > totalPages) return;
+    const limit = 10;
+    var url = `${BASE_URL}/api/contents/filter?languageId=${form.language}&categoryId=${form.category}&subjectAreaId=${form.subjectArea}&page=${nextPage}&limit=${limit}`;
+
+    fetch(url)
+      .then((res) => res.json())
+      .then((json) => {
+        setLoading(false);
+        setPage(nextPage);
+        setTotalPages(json.totalPages);
+
+        if (json.statusMessage == "No Contents" || json.data.length == 0) {
+          if (Platform.OS === "web") {
+            toast.error(t("advisory.filter.nofiltercontent"));
+          } else {
+            Alert.alert("Error", t("advisory.filter.nofiltercontent"));
+          }
+        }
+        for (const item of json.data) {
           var videoUrl = `${BASE_URL}/` + item.videoPath;
           var imageUrl = `${BASE_URL}/` + item.thumbNailPath;
           const processed = {
@@ -332,7 +374,7 @@ export default function TabTwoScreen() {
               maxHeight={150}
             />
           </View>
-          <TouchableOpacity onPress={() => filterData()}>
+          <TouchableOpacity onPress={() => filterData("Clicked")}>
             <View
               style={[
                 styles.btn,
