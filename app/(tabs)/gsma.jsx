@@ -14,20 +14,42 @@ import {
   StyleSheet,
   Text,
   TouchableOpacity,
+  useWindowDimensions,
   View,
 } from "react-native";
 import { WebView } from "react-native-webview";
+import CustomDropdown2 from "../../components/CustomDropDown2";
 import HeaderBar from "../../components/HeaderBar";
 export default function Gsma() {
-  const { t } = useTranslation();
+  const { i18n, t } = useTranslation();
+  const languageValue = i18n.resolvedLanguage || i18n.language;
   const colorScheme = useColorScheme();
   const isDark = colorScheme === "dark";
+  const { width, height } = useWindowDimensions();
+  const isMobile = width < 480;
 
   // const BASE_URL = process.env.EXPO_PUBLIC_BASE_URL;
   const hostname = window.location.hostname;
   const port = 3000;
   const BASE_URL = `http://${hostname}:${port}`;
   // console.log("API URL: ", BASE_URL);
+  const [form, setForm] = useState({
+    language:
+      languageValue == "om"
+        ? 1
+        : languageValue == "am"
+          ? 2
+          : languageValue == "en"
+            ? 3
+            : languageValue == "ti"
+              ? 5
+              : 2,
+    category: "",
+    subjectArea: "",
+  });
+
+  const [languages, setLanguages] = useState([]);
+  const [open, setOpen] = useState(false);
 
   const [contents, setContents] = useState([]);
   const [amharicTitle, setAmharicTitle] = useState("");
@@ -38,6 +60,15 @@ export default function Gsma() {
 
   const [isPlayerVisible, setPlayerVisible] = useState(false);
   const [pdfUrl, setPdfUrl] = useState("");
+
+  const handleDropdownChange = (fieldName) => (callback) => {
+    const selectedValue = callback(form[fieldName]);
+
+    setForm((prevForm) => ({
+      ...prevForm,
+      language: selectedValue,
+    }));
+  };
 
   const fetchConents = async (nextPage = 1) => {
     if (nextPage > totalPages) return;
@@ -67,13 +98,94 @@ export default function Gsma() {
 
   const fetchMore = () => {
     if (!loading && page < totalPages) {
-      fetchConents(page + 1);
+      filterData("FETCHMORE", form.language, page + 1);
+    }
+  };
+
+  const getLanguageId = (languageValue) => {
+    switch (languageValue) {
+      case "en":
+        return 3;
+      case "am":
+        return 2;
+      case "om":
+        return 1;
+      case "ti":
+        return 5;
+      default:
+        return 0;
     }
   };
 
   useEffect(() => {
-    fetchConents();
-  }, []);
+    const languageCode = getLanguageId(languageValue);
+
+    setForm((prevForm) => ({
+      ...prevForm,
+      language: languageCode,
+    }));
+
+    filterData("Clicked", languageCode);
+
+    fetch(`${BASE_URL}/api/languages`)
+      .then((res) => res.json())
+      .then((json) => {
+        setLoading(false);
+        // setLanguages([]);
+        setLanguages(json);
+        // for (const item of json) {
+        //   const processed = {
+        //     label: item.name,
+        //     value: item.id,
+        //   };
+
+        //   setLanguages((prev) => [...prev, processed]);
+        // }
+      })
+      .catch((error) => {
+        console.error("API Error:", error);
+        setLoading(false);
+      });
+
+    // fetchConents();
+  }, [languageValue]);
+
+  const filterData = async (
+    event,
+    languageId = form.language,
+    nextPage = 1,
+  ) => {
+    if (event != "FETCHMORE") {
+      setContents([]);
+    }
+
+    if (nextPage > totalPages) return;
+    const limit = 10;
+    fetch(
+      `${BASE_URL}/api/gsma/filter?languageId=${languageId}&page=${nextPage}&limit=${limit}`,
+    )
+      .then((res) => res.json())
+      .then((json) => {
+        setLoading(false);
+        setPage(nextPage);
+        setTotalPages(json.totalPages);
+
+        for (const item of json.data) {
+          var fileUrl = `${BASE_URL}/` + item.filePath;
+          var imageUrl = `${BASE_URL}/` + item.thumbNailPath;
+          const processed = {
+            ...item,
+            fileUrl: fileUrl,
+            imageUrl: imageUrl,
+          };
+          setContents((prev) => [...prev, processed]);
+        }
+      })
+      .catch((error) => {
+        console.error("API Error:", error);
+        setLoading(false);
+      });
+  };
 
   if (loading) {
     return <ActivityIndicator />;
@@ -82,6 +194,61 @@ export default function Gsma() {
   return (
     <ThemedView style={{ flex: 1 }}>
       <HeaderBar />
+      <View
+        style={[
+          styles.servicesCard,
+          {
+            flexDirection: isMobile ? "column" : "row",
+            alignSelf: "center",
+            justifyContent: "center",
+            gap: 20,
+            width: isMobile ? "90%" : "70%",
+            height: isMobile ? 150 : 80,
+            marginBottom: 5,
+            marginTop: 10,
+            backgroundColor: isDark ? "#323232" : "#F9F9F9",
+            ShadowColor: isDark ? "white" : "black",
+            boxShadow: isDark
+              ? "0 4px 8px rgba(255, 255, 255, 0.5)"
+              : "0 4px 8px rgba(0, 0, 0, 0.5)",
+            borderWidth: isDark ? 1 : 0,
+            borderColor: isDark ? "#5e5e5a" : "#e2e0d8",
+          },
+        ]}
+      >
+        <View style={{ flexDirection: "row", gap: 20 }}>
+          <View>
+            <CustomDropdown2
+              title={t("advisory.modal.language")}
+              items={languages}
+              value={form.language}
+              setValue={handleDropdownChange("language")}
+              placeholder={t("header.language.select")}
+              zIndex={3000}
+              zIndexInverse={1000}
+              listMode="MODAL"
+              labelKey={"name"}
+              modalAnimation="fade"
+              maxHeight={150}
+            />
+          </View>
+          <TouchableOpacity onPress={() => filterData("Clicked")}>
+            <View
+              style={[
+                styles.btn,
+                {
+                  opacity: isDark ? 0.8 : 1,
+                  backgroundColor: isDark ? "#333333" : "#138f49",
+                  borderWidth: 1,
+                  borderColor: isDark ? "#5e5e5a" : "#e2e0d8",
+                },
+              ]}
+            >
+              <Text style={styles.btnText}>{t("buttons.search")}</Text>
+            </View>
+          </TouchableOpacity>
+        </View>
+      </View>
       <FlatList
         data={contents}
         keyExtractor={(item, index) => `${item.id}-${index}`}
@@ -296,5 +463,18 @@ const styles = StyleSheet.create({
     top: 40,
     right: 20,
     zIndex: 10,
+  },
+  /** Button */
+  btn: {
+    borderRadius: 10,
+    paddingVertical: 10,
+    paddingHorizontal: 15,
+    backgroundColor: "rgba(19, 143, 73, 0.74)",
+  },
+  btnText: {
+    fontSize: 20,
+    fontWeight: "500",
+    fontFamily: "OutFitBold",
+    color: "#ffffff",
   },
 });
