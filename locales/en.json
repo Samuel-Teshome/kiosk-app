@@ -34,7 +34,8 @@
     "filter": {
       "category": "Select Category",
       "subjectArea": "Select Subject Area",
-      "nofiltercontent": "No Content with Filter Criteria"
+      "nofiltercontent": "No Content with Filter Criteria",
+      "search": "Search by Title"
     },
     "modal": {
       "language": "Language",

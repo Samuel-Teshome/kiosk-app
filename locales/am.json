@@ -34,7 +34,8 @@
     "filter": {
       "category": "ምድብ ይምረጡ",
       "subjectArea": "ርዕሰ ጉዳይ ይምረጡ",
-      "nofiltercontent": "በማጣሪያ መስፈርቶቹ መሰረት ምንም ይዘት የለም"
+      "nofiltercontent": "በማጣሪያ መስፈርቶቹ መሰረት ምንም ይዘት የለም",
+      "search": "በርዕስ ይፈልጉ"
     },
     "modal": {
       "language": "ቋንቋ",

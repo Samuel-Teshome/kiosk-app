@@ -34,7 +34,8 @@
     "filter": {
       "category": "ምድብ ምረጽ",
       "subjectArea": "ርእሰ ነገር ምረጽ",
-      "nofiltercontent": "ምስ ፍልተር መዐቀኒታት ዘለዎ ትሕዝቶ የለን"
+      "nofiltercontent": "ምስ ፍልተር መዐቀኒታት ዘለዎ ትሕዝቶ የለን",
+      "search": "ብኣርእስቲ ድለዩ"
     },
     "modal": {
       "language": "ቋንቋ",

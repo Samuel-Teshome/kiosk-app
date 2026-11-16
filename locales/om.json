@@ -34,7 +34,8 @@
     "filter": {
       "category": "Gosa Filadhu",
       "subjectArea": "Mata duree Filadhu",
-      "nofiltercontent": "Qabiyyee Ulaagaalee Caalbaasii Waliin Hin Qabu"
+      "nofiltercontent": "Qabiyyee Ulaagaalee Caalbaasii Waliin Hin Qabu",
+      "search": "Mata dureedhaan barbaadi"
     },
     "modal": {
       "language": "Afaan",
