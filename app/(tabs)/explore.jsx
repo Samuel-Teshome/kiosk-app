@@ -1,16 +1,19 @@
 import { ThemedView } from "@/components/ThemedView";
 import { useColorScheme } from "@/hooks/useColorScheme";
-import AntDesign from "@expo/vector-icons/AntDesign";
-import Feather from "@expo/vector-icons/Feather";
-import FontAwesome from "@expo/vector-icons/FontAwesome";
-import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
-import MaterialIcons from "@expo/vector-icons/MaterialIcons";
+import {
+  AntDesign,
+  Feather,
+  FontAwesome,
+  FontAwesome6,
+  MaterialIcons,
+} from "@expo/vector-icons";
 // import { Video } from "expo-av";
 // import Constants from "expo-constants";
 import { Image } from "expo-image";
 import { Video as ExpoVideo } from "expo-video";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import toast, { Toaster } from "react-hot-toast";
+import { useTranslation } from "react-i18next";
 import {
   ActivityIndicator,
   FlatList,
@@ -20,6 +23,7 @@ import {
   Pressable,
   StyleSheet,
   Text,
+  TextInput,
   TouchableOpacity,
   useWindowDimensions,
   View,
@@ -27,12 +31,16 @@ import {
 import ReactPlayer from "react-player";
 import CustomDropdown2 from "../../components/CustomDropDown2";
 import HeaderBar from "../../components/HeaderBar";
+import TooltipText from "../../components/TooltipText";
 
 export default function TabTwoScreen() {
+  const { i18n, t } = useTranslation();
+  const languageValue = i18n.resolvedLanguage || i18n.language;
   const { width, height } = useWindowDimensions();
   const isMobile = width < 480;
   const colorScheme = useColorScheme();
   const isDark = colorScheme === "dark";
+  const controllerRef = useRef(null);
 
   // const BASE_URL = process.env.EXPO_PUBLIC_BASE_URL;
   const hostname = window.location.hostname;
@@ -42,7 +50,16 @@ export default function TabTwoScreen() {
 
   const [isPlayerVisible, setPlayerVisible] = useState(false);
   const [form, setForm] = useState({
-    language: "",
+    language:
+      languageValue == "om"
+        ? 1
+        : languageValue == "am"
+          ? 2
+          : languageValue == "en"
+            ? 3
+            : languageValue == "ti"
+              ? 5
+              : 2,
     category: "",
     subjectArea: "",
   });
@@ -53,6 +70,8 @@ export default function TabTwoScreen() {
   const [categories, setCategories] = useState([]);
   const [openSa, setOpenSa] = useState(false);
   const [subjectAreas, setSubjectAreas] = useState([]);
+  const [searchText, setSearchText] = useState("");
+  const [apiUrl, setApiUrl] = useState("");
 
   const openLink = async (url) => {
     const supported = await Linking.canOpenURL(url);
@@ -71,6 +90,7 @@ export default function TabTwoScreen() {
 
   const [contents, setContents] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [loadingMore, setLoadingMore] = useState(false);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [videoTitle, setVideoTitle] = useState("");
@@ -102,9 +122,24 @@ export default function TabTwoScreen() {
       });
   };
 
-  const fetchMore = () => {
-    if (!loading && page < totalPages) {
-      fetchConents(page + 1);
+  const fetchMore = async () => {
+    if (!loadingMore && page < totalPages) {
+      // fetchConents(page + 1);
+      // filterData("FETCHMORE", page + 1);
+      controllerRef.current?.abort();
+
+      let localApiUrl = apiUrl;
+
+      let nextPage = page + 1;
+
+      controllerRef.current = new AbortController();
+
+      await fetchContent({
+        localApiUrl,
+        signal: controllerRef.current.signal,
+        append: true,
+        nextPage,
+      });
     }
   };
   // "http://localhost:3000/api/languages"
@@ -117,7 +152,38 @@ export default function TabTwoScreen() {
   //       "&subjectAreaId=" +
   //       form.subjectArea
   useEffect(() => {
-    fetchConents();
+    // let languageCode = 0;
+
+    // switch (languageValue) {
+    //   case "en":
+    //     languageCode = 3;
+    //     break;
+    //   case "am":
+    //     languageCode = 2;
+    //     break;
+    //   case "om":
+    //     languageCode = 1;
+    //     break;
+    //   case "ti":
+    //     languageCode = 5;
+    //     break;
+    // }
+
+    // setForm({ ...form, ["language"]: languageCode });
+
+    // if (!searchText.trim()) {
+    //   setLoading(false);
+    //   return;
+    // }
+
+    // const timer = setTimeout(async () => {
+    //   console.log("@@@@@@@@@@@@@@");
+    //   console.log("Search Text: ", searchText);
+    //   console.log("Timer: ", timer);
+    // }, 400);
+
+    // fetchConents();
+    // filterData("Clicked");
 
     fetch(`${BASE_URL}/api/languages`)
       .then((res) => res.json())
@@ -180,7 +246,67 @@ export default function TabTwoScreen() {
       });
   }, []);
 
-  const filterData = async () => {
+  useEffect(() => {
+    let languageCode = 0;
+
+    switch (languageValue) {
+      case "en":
+        languageCode = 3;
+        break;
+      case "am":
+        languageCode = 2;
+        break;
+      case "om":
+        languageCode = 1;
+        break;
+      case "ti":
+        languageCode = 5;
+        break;
+    }
+
+    setForm({ ...form, ["language"]: languageCode });
+
+    const controller = new AbortController();
+    controllerRef.current = controller;
+
+    const fetchData = async () => {
+      let localApiUrl = "";
+
+      if (searchText.trim() !== "") {
+        const params = new URLSearchParams({
+          keyword: searchText.trim(),
+        });
+
+        localApiUrl = `${BASE_URL}/api/contents/search?${params.toString()}`;
+        setContents([]);
+      } else {
+        const params = new URLSearchParams();
+
+        params.append("languageId", form.language);
+        params.append("categoryId", form.category);
+        params.append("subjectAreaId", form.subjectArea);
+
+        localApiUrl = `${BASE_URL}/api/contents/filter?${params.toString()}`;
+      }
+
+      await fetchContent({
+        localApiUrl,
+        signal: controller.signal,
+        append: false,
+      });
+    };
+
+    const delay = searchText.trim() !== "" ? 400 : 0;
+
+    const timer = setTimeout(fetchData, delay);
+
+    return () => {
+      clearTimeout(timer);
+      controller.abort();
+    };
+  }, [languageValue, searchText]);
+
+  const filterData2 = async () => {
     var url = `${BASE_URL}/api/contents/filter?languageId=${form.language}&categoryId=${form.category}&subjectAreaId=${form.subjectArea}`;
 
     fetch(url)
@@ -191,9 +317,9 @@ export default function TabTwoScreen() {
           setContents([]);
         } else {
           if (Platform.OS === "web") {
-            toast.error("No Content with Filter Criteria");
+            toast.error(t("advisory.filter.nofiltercontent"));
           } else {
-            Alert.alert("Error", "No Content with Filter Criteria");
+            Alert.alert("Error", t("advisory.filter.nofiltercontent"));
           }
         }
         for (const item of json) {
@@ -214,6 +340,164 @@ export default function TabTwoScreen() {
       });
   };
 
+  const filterData3 = async (event, nextPage = 1) => {
+    if (event != "FETCHMORE") {
+      setContents([]);
+    }
+
+    if (nextPage > totalPages) return;
+    const limit = 10;
+    var url = `${BASE_URL}/api/contents/filter?languageId=${form.language}&categoryId=${form.category}&subjectAreaId=${form.subjectArea}&page=${nextPage}&limit=${limit}`;
+
+    fetch(url)
+      .then((res) => res.json())
+      .then((json) => {
+        setLoading(false);
+        setPage(nextPage);
+        setTotalPages(json.totalPages);
+
+        if (json.statusMessage == "No Contents" || json.data.length == 0) {
+          if (Platform.OS === "web") {
+            toast.error(t("advisory.filter.nofiltercontent"));
+          } else {
+            Alert.alert("Error", t("advisory.filter.nofiltercontent"));
+          }
+        }
+        for (const item of json.data) {
+          var videoUrl = `${BASE_URL}/` + item.videoPath;
+          var imageUrl = `${BASE_URL}/` + item.thumbNailPath;
+          const processed = {
+            ...item,
+            videoUrl: videoUrl,
+            imageUrl: imageUrl,
+          };
+
+          setContents((prev) => [...prev, processed]);
+        }
+      })
+      .catch((error) => {
+        console.error("API Error:", error);
+        setLoading(false);
+      });
+  };
+
+  const fetchContent = async ({
+    localApiUrl,
+    signal,
+    append = false,
+    nextPage = 1,
+  }) => {
+    try {
+      if (nextPage > totalPages) return;
+
+      if (append) {
+        setLoadingMore(true);
+      } else {
+        setLoading(true);
+      }
+
+      setPage(nextPage);
+      // setTotalPages(json.totalPages);
+
+      const limit = 10;
+
+      const params = new URLSearchParams({
+        page: String(nextPage),
+        limit: limit,
+      });
+
+      const updatedApiUrl = `${localApiUrl}&${params.toString()}`;
+
+      setApiUrl(localApiUrl);
+
+      const response = await fetch(updatedApiUrl, { signal });
+
+      if (!response.ok) {
+        throw new Error(`API Error: ${response.status}`);
+      }
+
+      const result = await response.json();
+
+      console.log("Result: ", result);
+      console.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+
+      if (append) {
+        // setContents([]);
+        //   console.log("############################");
+        //   console.log("Append Content: ", append);
+        //   console.log("############################");
+      } else {
+        // setData(result);
+        setContents([]);
+        //   console.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+        //   console.log("Append Content: ", append);
+        //   console.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+      }
+
+      setTotalPages(result.totalPages);
+
+      if (result.statusMessage == "No Contents" || result.data.length == 0) {
+        if (Platform.OS === "web") {
+          toast.error(t("advisory.filter.nofiltercontent"));
+        } else {
+          Alert.alert("Error", t("advisory.filter.nofiltercontent"));
+        }
+      }
+
+      for (const item of result.data) {
+        var videoUrl = `${BASE_URL}/` + item.videoPath;
+        var imageUrl = `${BASE_URL}/` + item.thumbNailPath;
+        const processed = {
+          ...item,
+          videoUrl: videoUrl,
+          imageUrl: imageUrl,
+        };
+
+        setContents((prev) => [...prev, processed]);
+      }
+
+      return result;
+    } catch (error) {
+      if (error.name !== "AbortError") {
+        console.error("Error fetching data:", error);
+      }
+
+      return null;
+    } finally {
+      if (!signal?.aborted) {
+        if (append) {
+          setLoadingMore(false);
+        } else {
+          setLoading(false);
+        }
+      }
+    }
+  };
+
+  const handleButtonPress = async () => {
+    controllerRef.current?.abort();
+
+    setSearchText("");
+
+    let localApiUrl = "";
+
+    controllerRef.current = new AbortController();
+
+    const params = new URLSearchParams();
+
+    params.append("languageId", form.language);
+    params.append("categoryId", form.category);
+    params.append("subjectAreaId", form.subjectArea);
+
+    localApiUrl = `${BASE_URL}/api/contents/filter?${params.toString()}`;
+
+    await fetchContent({
+      localApiUrl,
+      signal: controllerRef.current.signal,
+      append: false,
+    });
+  };
+
   if (loading) {
     return <ActivityIndicator />;
   }
@@ -232,6 +516,142 @@ export default function TabTwoScreen() {
       />
       <HeaderBar />
       <View
+        style={{
+          flexDirection: isMobile ? "column" : "row",
+          justifyContent: "center",
+        }}
+      >
+        <View
+          style={[
+            styles.servicesCard,
+            {
+              flexDirection: isMobile ? "column" : "row",
+              alignSelf: "center",
+              justifyContent: "center",
+              gap: 20,
+              width: isMobile ? "90%" : "60%",
+              height: isMobile ? 150 : 80,
+              marginBottom: 5,
+              marginTop: isMobile ? 0 : 10,
+              backgroundColor: isDark ? "#323232" : "#F9F9F9",
+              ShadowColor: isDark ? "white" : "black",
+              boxShadow: isDark
+                ? "0 4px 8px rgba(255, 255, 255, 0.5)"
+                : "0 4px 8px rgba(0, 0, 0, 0.5)",
+              borderWidth: isDark ? 1 : 0,
+              borderColor: isDark ? "#5e5e5a" : "#e2e0d8",
+            },
+          ]}
+        >
+          <View style={{ flexDirection: "row", gap: 20 }}>
+            <View>
+              <CustomDropdown2
+                title={t("advisory.modal.language")}
+                items={languages}
+                value={form.language}
+                setValue={handleDropdownChange("language")}
+                placeholder={t("header.language.select")}
+                zIndex={3000}
+                zIndexInverse={1000}
+                listMode="MODAL"
+                labelKey={"name"}
+                modalAnimation="fade"
+                maxHeight={150}
+              />
+            </View>
+            <View>
+              <CustomDropdown2
+                title={t("advisory.modal.category")}
+                items={categories}
+                value={form.category}
+                setValue={handleDropdownChange("category")}
+                placeholder={t("advisory.filter.category")}
+                zIndex={3000}
+                zIndexInverse={1000}
+                listMode="MODAL"
+                labelKey={"name"}
+                modalAnimation="fade"
+                maxHeight={150}
+              />
+            </View>
+          </View>
+          <View style={{ flexDirection: "row", gap: 20 }}>
+            <View>
+              <CustomDropdown2
+                title={t("advisory.modal.subjectArea")}
+                items={subjectAreas}
+                value={form.subjectArea}
+                setValue={handleDropdownChange("subjectArea")}
+                placeholder={t("advisory.filter.subjectArea")}
+                zIndex={3000}
+                zIndexInverse={1000}
+                listMode="MODAL"
+                labelKey={"name"}
+                modalAnimation="fade"
+                maxHeight={150}
+              />
+            </View>
+            <TouchableOpacity onPress={() => handleButtonPress()}>
+              <View
+                style={[
+                  styles.btn,
+                  {
+                    opacity: isDark ? 0.8 : 1,
+                    backgroundColor: isDark ? "#333333" : "#138f49",
+                    borderWidth: 1,
+                    borderColor: isDark ? "#5e5e5a" : "#e2e0d8",
+                  },
+                ]}
+              >
+                <Text style={styles.btnText}>{t("buttons.search")}</Text>
+              </View>
+            </TouchableOpacity>
+          </View>
+        </View>
+        <View
+          style={[
+            styles.servicesCard,
+            {
+              flexDirection: isMobile ? "column" : "row",
+              alignSelf: "center",
+              justifyContent: "center",
+              gap: 20,
+              width: isMobile ? "90%" : "20%",
+              height: isMobile ? 80 : 80,
+              marginBottom: 5,
+              marginTop: isMobile ? 0 : 10,
+              backgroundColor: isDark ? "#323232" : "#F9F9F9",
+              ShadowColor: isDark ? "white" : "black",
+              boxShadow: isDark
+                ? "0 4px 8px rgba(255, 255, 255, 0.5)"
+                : "0 4px 8px rgba(0, 0, 0, 0.5)",
+              borderWidth: isDark ? 1 : 0,
+              borderColor: isDark ? "#5e5e5a" : "#e2e0d8",
+            },
+          ]}
+        >
+          <TextInput
+            placeholder={t("advisory.filter.search")}
+            placeholderTextColor={isDark ? "#888888" : "#999999"}
+            value={searchText}
+            onChangeText={setSearchText}
+            style={{
+              borderWidth: 1,
+              // borderColor: "#ccc",
+              borderColor: isDark ? "#777777" : "#ccc",
+              backgroundColor: isDark ? "transparent" : "#fff",
+              fontSize: 15,
+              fontFamily: "OutFit",
+              color: isDark ? "#fff" : "#585858",
+              borderRadius: 8,
+              padding: 10,
+            }}
+          />
+        </View>
+      </View>
+
+      {/* Old Filter Code */}
+      {/* <View
         style={[
           styles.servicesCard,
           {
@@ -256,11 +676,11 @@ export default function TabTwoScreen() {
         <View style={{ flexDirection: "row", gap: 20 }}>
           <View>
             <CustomDropdown2
-              title="Language"
+              title={t("advisory.modal.language")}
               items={languages}
               value={form.language}
               setValue={handleDropdownChange("language")}
-              placeholder="Select Language"
+              placeholder={t("header.language.select")}
               zIndex={3000}
               zIndexInverse={1000}
               listMode="MODAL"
@@ -271,11 +691,11 @@ export default function TabTwoScreen() {
           </View>
           <View>
             <CustomDropdown2
-              title="Category"
+              title={t("advisory.modal.category")}
               items={categories}
               value={form.category}
               setValue={handleDropdownChange("category")}
-              placeholder="Select Category"
+              placeholder={t("advisory.filter.category")}
               zIndex={3000}
               zIndexInverse={1000}
               listMode="MODAL"
@@ -288,11 +708,11 @@ export default function TabTwoScreen() {
         <View style={{ flexDirection: "row", gap: 20 }}>
           <View>
             <CustomDropdown2
-              title="Subject Area"
+              title={t("advisory.modal.subjectArea")}
               items={subjectAreas}
               value={form.subjectArea}
               setValue={handleDropdownChange("subjectArea")}
-              placeholder="Select Subject Area"
+              placeholder={t("advisory.filter.subjectArea")}
               zIndex={3000}
               zIndexInverse={1000}
               listMode="MODAL"
@@ -301,7 +721,7 @@ export default function TabTwoScreen() {
               maxHeight={150}
             />
           </View>
-          <TouchableOpacity onPress={() => filterData()}>
+          <TouchableOpacity onPress={() => filterData("Clicked")}>
             <View
               style={[
                 styles.btn,
@@ -313,11 +733,29 @@ export default function TabTwoScreen() {
                 },
               ]}
             >
-              <Text style={styles.btnText}>Filter</Text>
+              <Text style={styles.btnText}>{t("buttons.search")}</Text>
             </View>
           </TouchableOpacity>
         </View>
-      </View>
+        <View>
+          <TextInput
+            placeholder="Search..."
+            value={searchText}
+            onChangeText={setSearchText}
+            style={{
+              borderWidth: 1,
+              // borderColor: "#ccc",
+              borderColor: isDark ? "#777777" : "#ccc",
+              backgroundColor: isDark ? "transparent" : "#fff",
+              fontSize: 15,
+              fontFamily: "OutFit",
+              color: isDark ? "#fff" : "#585858",
+              borderRadius: 8,
+              padding: 10,
+            }}
+          />
+        </View>
+      </View> */}
       {/* <View
         style={[
           styles.servicesCard,
@@ -407,18 +845,17 @@ export default function TabTwoScreen() {
                 borderWidth: isDark ? 1 : 0,
                 borderColor: isDark ? "#5e5e5a" : "#e2e0d8",
                 backgroundColor: isDark ? "#323232" : "#F9F9F9",
+                gap: 5,
               },
             ]}
           >
-            <Text
-              style={[
-                styles.serviceName,
-                { color: isDark ? "#fff" : "#102714" },
-              ]}
-              numberOfLines={1}
-            >
-              {content.videoTitle}
-            </Text>
+            <TooltipText
+              localVideoTitle={content.localVideoTitle}
+              localLocation={content.localLocation}
+              videoTitle={content.videoTitle}
+              location={content.location}
+            />
+
             <TouchableOpacity
               onPress={() => {
                 setPlayerVisible(true);
@@ -429,7 +866,16 @@ export default function TabTwoScreen() {
               <Image
                 alt="App Logo"
                 contentFit="contain"
-                style={[styles.headerImg, { height: 200, width: 250 }]}
+                style={[
+                  styles.headerImg,
+                  {
+                    height: 180,
+                    width: 230,
+                    borderWidth: isDark ? 0 : 0,
+                    borderColor: isDark ? "#5e5e5a" : "#334fff",
+                    borderRadius: 5,
+                  },
+                ]}
                 source={{ uri: content.imageUrl }}
               />
             </TouchableOpacity>
@@ -450,11 +896,11 @@ export default function TabTwoScreen() {
               >
                 <View
                   style={{
-                    width: "80%",
+                    width: "85%",
                     flexDirection: "row",
                     gap: 5,
                     flexWrap: "wrap",
-                    justifyContent: "space-between",
+                    // justifyContent: "space-between",
                     alignItems: "center",
                   }}
                 >
@@ -465,6 +911,39 @@ export default function TabTwoScreen() {
                       borderWidth: 1,
                       justifyContent: "center",
                       alignContent: "flex-start",
+                      alignItems: "center",
+                      borderRadius: 10,
+                      paddingHorizontal: 5,
+                      height: "50%",
+                      backgroundColor: isDark ? "#323232" : "#625641",
+                      borderWidth: isDark ? 1 : 0,
+                      borderColor: isDark ? "#5e5e5a" : "#625641",
+                    }}
+                  >
+                    <FontAwesome6
+                      name="location-dot"
+                      size={11}
+                      color="white"
+                      style={{ paddingTop: 1 }}
+                    />
+                    <Text
+                      style={{
+                        fontSize: 11,
+                        fontFamily: "OutFit",
+                        color: "white",
+                      }}
+                    >
+                      {content.localLocation}
+                    </Text>
+                  </View>
+                  <View
+                    style={{
+                      flexDirection: "row",
+                      gap: 5,
+                      borderWidth: 1,
+                      justifyContent: "center",
+                      alignContent: "flex-start",
+                      alignItems: "center",
                       borderRadius: 10,
                       paddingHorizontal: 5,
                       height: "50%",
@@ -495,6 +974,7 @@ export default function TabTwoScreen() {
                       gap: 5,
                       borderWidth: 1,
                       justifyContent: "center",
+                      alignItems: "center",
                       borderRadius: 10,
                       paddingHorizontal: 5,
                       height: "50%",
@@ -542,6 +1022,7 @@ export default function TabTwoScreen() {
                       gap: 5,
                       borderWidth: 1,
                       justifyContent: "center",
+                      alignItems: "center",
                       borderRadius: 10,
                       paddingHorizontal: 5,
                       height: "50%",
@@ -563,7 +1044,9 @@ export default function TabTwoScreen() {
                         color: "white",
                       }}
                     >
-                      {content.subjectArea}
+                      {content.subjectArea?.length > 20
+                        ? content.subjectArea.substring(0, 20) + "..."
+                        : content.subjectArea}
                     </Text>
                   </View>
                 </View>
@@ -571,7 +1054,7 @@ export default function TabTwoScreen() {
                   <Pressable onPress={() => openLink(content.youtubeId)}>
                     <FontAwesome
                       name="youtube-play"
-                      size={36}
+                      size={30}
                       color={isDark ? "#fff" : "red"}
                     />
                   </Pressable>
@@ -635,14 +1118,19 @@ export default function TabTwoScreen() {
         )}
         onEndReached={fetchMore}
         onEndReachedThreshold={0.5}
+        // ListFooterComponent={
+        //   loading ? <ActivityIndicator size="small" color="#0000ff" /> : null
+        // }
         ListFooterComponent={
-          loading ? <ActivityIndicator size="small" color="#0000ff" /> : null
+          loadingMore ? (
+            <ActivityIndicator size="small" color="#0000ff" />
+          ) : null
         }
         ListEmptyComponent={
           <Text
             style={[styles.headerText, { color: isDark ? "white" : "#102714" }]}
           >
-            No content available.
+            {t("home.nocontent")}
           </Text>
         }
       />
@@ -697,7 +1185,7 @@ const styles = StyleSheet.create({
     marginBottom: 30,
   },
   serviceName: {
-    fontSize: 20,
+    fontSize: 15,
     fontFamily: "OutFit",
   },
   closeButton: {

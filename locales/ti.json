@@ -1,0 +1,57 @@
+{
+  "header": {
+    "title": "ዲጂታል ኪዮስክ",
+    "language": {
+      "select": "ቋንቋ ምረጽ",
+      "en": {
+        "title": "ኢንግሊሽ",
+        "code": "ኢን"
+      },
+      "am": { "title": "ኣምሓርኛ", "code": "ኣም" },
+      "om": { "title": "ኣፋን ኦሮሞ", "code": "ኦሮ" },
+      "ti": { "title": "ትግሪኛ", "code": "ትግ" }
+    },
+    "toolTip": {
+      "register": "ተጠቃሚ ምዝገባ",
+      "administration": "ምምሕዳር ዳታ"
+    }
+  },
+  "navigation": {
+    "services": {
+      "title": "ግልጋሎት"
+    },
+    "advisory": {
+      "title": "ኣማኻሪ"
+    },
+    "digitalLiteracy": {
+      "title": "ዲጂታል  ኣጠቓቕማ"
+    }
+  },
+  "home": {
+    "nocontent": "ትሕዝቶ የለን::"
+  },
+  "advisory": {
+    "filter": {
+      "category": "ምድብ ምረጽ",
+      "subjectArea": "ርእሰ ነገር ምረጽ",
+      "nofiltercontent": "ምስ ፍልተር መዐቀኒታት ዘለዎ ትሕዝቶ የለን",
+      "search": "ብኣርእስቲ ድለዩ"
+    },
+    "modal": {
+      "language": "ቋንቋ",
+      "category": "ምደባ",
+      "subjectArea": "ርእሰ-ጉዳይ"
+    }
+  },
+  "buttons": {
+    "search": "ምድላይ",
+    "submit": "Submit",
+    "cancel": "Cancel"
+  },
+  "login": {
+    "credential": {
+      "username": "Username",
+      "password": "Password"
+    }
+  }
+}

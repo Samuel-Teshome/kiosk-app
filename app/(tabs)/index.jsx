@@ -25,11 +25,14 @@ import {
   View,
   useWindowDimensions,
 } from "react-native";
+
+import { useTranslation } from "react-i18next";
 import AudioPlayer from "../../components/AudioPlayer";
 import { ColorBar3 } from "../../components/ColorBar";
 import HeaderBar from "../../components/HeaderBar";
 
 export default function HomeScreen() {
+  const { t } = useTranslation();
   const opacity = useRef(new Animated.Value(1)).current;
   const colorScheme = useColorScheme();
   const isDark = colorScheme === "dark";
@@ -135,7 +138,9 @@ export default function HomeScreen() {
   const [soilTypeMenuLabel, setSoilTypeMenuLabel] = useState();
   const [showSoilTypeMenuLabel, setShowSoilTypeMenuLabel] = useState(false);
   const [backingCropList, setBackingCropList] = useState("");
+
   // "http://localhost:3000/api/api/services"
+
   useEffect(() => {
     fetch(`${BASE_URL}/api/services`)
       .then((res) => res.json())
@@ -1048,7 +1053,7 @@ export default function HomeScreen() {
               },
             ]}
           >
-            No content available.
+            {t("home.nocontent")}
           </Text>
         )}
       </ScrollView>
@@ -2324,5 +2329,19 @@ const styles = StyleSheet.create({
   subTitle: {
     fontFamily: "OutFit",
     color: "#fff",
+  },
+
+  /** Button */
+  btn: {
+    borderRadius: 10,
+    paddingVertical: 10,
+    paddingHorizontal: 15,
+    backgroundColor: "rgba(19, 143, 73, 0.74)",
+  },
+  btnText: {
+    fontSize: 20,
+    fontWeight: "500",
+    fontFamily: "OutFit",
+    color: "#ffffff",
   },
 });

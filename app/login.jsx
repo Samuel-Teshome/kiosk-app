@@ -5,6 +5,7 @@ import { Feather } from "@expo/vector-icons";
 import { router } from "expo-router";
 import { useState } from "react";
 import toast, { Toaster } from "react-hot-toast";
+import { useTranslation } from "react-i18next";
 import {
   Platform,
   StyleSheet,
@@ -15,6 +16,7 @@ import {
 } from "react-native";
 
 const Login = () => {
+  const { t } = useTranslation();
   const colorScheme = useColorScheme();
   const isDark = colorScheme === "dark";
   const [form, setForm] = useState({
@@ -120,7 +122,7 @@ const Login = () => {
               lineHeight: 32,
             }}
           >
-            Login
+            {t("header.title")}
           </Text>
         </View>
         <View
@@ -141,7 +143,7 @@ const Login = () => {
                   color: isDark ? "white" : "#615542",
                 }}
               >
-                Username
+                {t("login.credential.username")}
               </Text>
               <Text
                 style={{
@@ -186,7 +188,7 @@ const Login = () => {
                   color: isDark ? "white" : "#615542",
                 }}
               >
-                Password
+                {t("login.credential.password")}
               </Text>
               <Text
                 style={{
@@ -255,7 +257,7 @@ const Login = () => {
                   },
                 ]}
               >
-                <Text style={styles.btnText}>Submit</Text>
+                <Text style={styles.btnText}>{t("buttons.submit")}</Text>
               </View>
             </TouchableOpacity>
             <TouchableOpacity
@@ -280,7 +282,7 @@ const Login = () => {
                     { fontFamily: isDark ? "OutFit" : "OutFitBold" },
                   ]}
                 >
-                  Cancel
+                  {t("buttons.cancel")}
                 </Text>
               </View>
             </TouchableOpacity>
